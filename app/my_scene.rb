@@ -11,8 +11,16 @@ class MyScene < SKScene
       @contentCreated = true
     end
 
-    gesture_recognizer = UIPanGestureRecognizer.alloc.initWithTarget(self, action: 'handle_pan_from:')
-    self.view.addGestureRecognizer(gesture_recognizer)
+    [
+      UISwipeGestureRecognizerDirectionRight,
+      UISwipeGestureRecognizerDirectionLeft,
+      UISwipeGestureRecognizerDirectionUp,
+      UISwipeGestureRecognizerDirectionDown,
+    ].each do |direction|
+      swipe_recognizer = UISwipeGestureRecognizer.alloc.initWithTarget(self, action: 'swipe:')
+      swipe_recognizer.direction = direction
+      self.view.addGestureRecognizer(swipe_recognizer)
+    end
   end
 
 
@@ -41,10 +49,12 @@ class MyScene < SKScene
 
     @tiles = []
 
-    tile_width  = 10
-    tile_height = 18
-    tile_width.times do |i|
-      tile_height.times do |j|
+    @tile_width  = (self.frame.size.width / TILE_SIZE).to_i
+    @tile_height = (self.frame.size.height / TILE_SIZE).to_i
+    puts "#{@tile_width}, #{@tile_height}"
+
+    @tile_width.times do |i|
+      @tile_height.times do |j|
 
         position = CGPointMake(i * TILE_SIZE, j * TILE_SIZE)
 
@@ -66,33 +76,84 @@ class MyScene < SKScene
     # Called before each frame is rendered
   end
 
-  def handle_pan_from(recognizer)
+  # UISwipeGestureRecognizer
+  def swipe(recognizer)
     case recognizer.state
-    when UIGestureRecognizerStateBegan
+    when UIGestureRecognizerStateRecognized
       touch_location = recognizer.locationInView(recognizer.view)
       touch_location = self.convertPointFromView(touch_location)
-      self.select_node_for_touch(touch_location)
-    when UIGestureRecognizerStateChanged
-      translation = recognizer.translationInView(recognizer.view)
-      translation = CGPointMake(translation.x, -translation.y)
-      self.pan_for_translation(translation)
-      recognizer.setTranslation(CGPointZero, inView: recognizer.view)
-    when UIGestureRecognizerStateEnded
+      direction = DIRECTION_MAP[recognizer.direction]
+      self.swipe_node(touch_location, direction)
     end
   end
 
-  def select_node_for_touch(touch_location)
+  DIRECTION_MAP = {
+    (1 << 0) => :right,
+    (1 << 1) => :left,
+    (1 << 2) => :up,
+    (1 << 3) => :down,
+  }
+
+  def moving_amount(direction)
+    case direction
+    when :right
+      [TILE_SIZE, 0]
+    when :left
+      [-TILE_SIZE, 0]
+    when :up
+      [0, TILE_SIZE]
+    when :down
+      [0, -TILE_SIZE]
+    end
+  end
+
+  def swipe_node(touch_location, direction)
     touched_node = self.nodeAtPoint(touch_location)
-    puts touched_node.inspect
-    @selected_node = touched_node
-  end
+    return unless touched_node.is_a? SKSpriteNode
 
-  def pan_for_translation(translation)
-    position = @selected_node.position
-    if @selected_node.is_a? SKSpriteNode
-      @selected_node.setPosition(CGPointMake(position.x + translation.x, position.y + translation.y))
+    touched_at = touched_node.position
+    case direction
+    when :right, :left
+      moving_nodes = @tiles.select do |tile|
+        tile.position.y == touched_at.y
+      end
+      puts moving_nodes.size
+    when :up, :down
+      moving_nodes = @tiles.select do |tile|
+        tile.position.x == touched_at.x
+      end
+      puts moving_nodes.size
+    end
+
+    x, y = moving_amount(direction)
+    moving_nodes.each do |node|
+      node_at = node.position
+
+      new_x = node_at.x + x
+      new_y = node_at.y + y
+
+      if new_x < 0
+        new_x += max_width
+      elsif new_x >= max_width
+        new_x -= max_width
+      end
+
+      if new_y < 0
+        new_y += max_height
+      elsif new_y >= max_height
+        new_y -= max_height
+      end
+
+      node.setPosition(CGPointMake(new_x, new_y))
     end
   end
 
+  def max_height
+    @tile_height * TILE_SIZE
+  end
+
+  def max_width
+    @tile_width * TILE_SIZE
+  end
 
 end
