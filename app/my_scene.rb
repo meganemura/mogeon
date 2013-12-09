@@ -10,7 +10,10 @@ class MyScene < SKScene
       self.createSceneContents
       @contentCreated = true
     end
+    setup_gesture_recognizer
+  end
 
+  def setup_gesture_recognizer
     [
       UISwipeGestureRecognizerDirectionRight,
       UISwipeGestureRecognizerDirectionLeft,
