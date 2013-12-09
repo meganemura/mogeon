@@ -99,16 +99,16 @@ class MyScene < SKScene
     touched_node = self.nodeAtPoint(touch_location)
     return unless touched_node.is_a? SKSpriteNode
 
+    condition = case direction
+                when :right, :left
+                  lambda {|a, b| a.y == b.y }
+                when :up, :down
+                  lambda {|a, b| a.x == b.x }
+                end
+
     touched_at = touched_node.position
-    case direction
-    when :right, :left
-      moving_nodes = @tiles.select do |tile|
-        tile.position.y == touched_at.y
-      end
-    when :up, :down
-      moving_nodes = @tiles.select do |tile|
-        tile.position.x == touched_at.x
-      end
+    moving_nodes = @tiles.select do |tile|
+      condition.call(tile.position, touched_at)
     end
 
     x, y = moving_amount(direction)
