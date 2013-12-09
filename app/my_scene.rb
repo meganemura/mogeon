@@ -52,7 +52,7 @@ class MyScene < SKScene
         tile_sprite.anchorPoint = CGPointMake(0, 0)
         tile_sprite.position = position
         @tiles << tile_sprite
-        self.addChild(tile_sprite)
+        self << tile_sprite
       end
     end
   end
