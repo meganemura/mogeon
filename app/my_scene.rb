@@ -31,6 +31,10 @@ class MyScene < SKScene
 
     self.backgroundColor = SKColor.darkGrayColor
 
+    setup_map
+  end
+
+  def setup_map
     tilesheet = SKTexture.textureWithImageNamed("tilesheet")
 
     Tile.texture = tilesheet
