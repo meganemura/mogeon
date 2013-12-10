@@ -32,6 +32,7 @@ class MyScene < SKScene
     self.backgroundColor = SKColor.darkGrayColor
 
     setup_map
+    setup_character
   end
 
   def setup_map
@@ -63,6 +64,12 @@ class MyScene < SKScene
         self << tile_sprite
       end
     end
+  end
+
+  def setup_character
+    # setup friends
+    # setup enemies
+    # setup neutrals
   end
 
   def update(current_time)
