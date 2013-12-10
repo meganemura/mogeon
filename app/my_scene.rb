@@ -1,3 +1,4 @@
+module Mogeon
 class MyScene < SKScene
   def initWithSize(size)
     super
@@ -142,4 +143,5 @@ class MyScene < SKScene
     @tile_width * Tile::SIZE
   end
 
+end
 end

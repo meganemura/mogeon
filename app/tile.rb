@@ -1,3 +1,4 @@
+module Mogeon
 class Tile < SKTexture
 
   SIZE = 32
@@ -16,4 +17,5 @@ class Tile < SKTexture
       self.textureWithRect(rect, inTexture: texture)
     end
   end
+end
 end
