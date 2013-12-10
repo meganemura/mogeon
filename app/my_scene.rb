@@ -66,10 +66,23 @@ class MyScene < SKScene
     end
   end
 
+  DEFAULT_FRIEND_SIZE = 1
   def setup_character
     # setup friends
+    @friends = DEFAULT_FRIEND_SIZE.times.map { Friend.new(0, 0) }
+    @friends.each do |friend|
+      locate(friend)
+    end
+
     # setup enemies
+
     # setup neutrals
+  end
+
+  # XXX: Map class のインスタンスメソッドにしたい
+  def locate(character)
+    character.setPosition(CGPointMake(0, 0))
+    self << character
   end
 
   def update(current_time)
