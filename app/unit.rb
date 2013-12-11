@@ -1,10 +1,10 @@
 module Mogeon
-class Character < SKTexture
+class Unit < SKTexture
   class << self
 
-    # TODO: Create character subclass
-    #   Character.register('leatherarmor', as: :Friend)
-    #     => Friend is subclass of Character and defined
+    # TODO: Create unit subclass
+    #   Unit.register('leatherarmor', as: :Friend)
+    #     => Friend is subclass of Unit and defined
     def register(resource, as: klass)
       puts resource
       puts klass
