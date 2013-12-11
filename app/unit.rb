@@ -36,10 +36,12 @@ class Friend < SKSpriteNode
       setup unless setup?
       rect = CGRectMake(x * w, y * h, w, h)
       texture = SKTexture.textureWithRect(rect, inTexture: @texture)
-      instance = self.spriteNodeWithTexture(texture)
-      instance.x = x
-      instance.y = y
-      # tap で
+      instance = self.spriteNodeWithTexture(texture).tap do |sprite|
+        sprite.x = x
+        sprite.y = y
+        sprite.anchorPoint = CGPointMake(0, 0)
+      end
+
       instance
     end
   end
