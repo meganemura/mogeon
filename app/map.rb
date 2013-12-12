@@ -1,30 +1,28 @@
 module Mogeon
 
-  class Map < SKSpriteNode
-    TILE_SIZE = 32
-
+  class Map
     class << self
 
       def size=(size)
         @texture = SKTexture.textureWithImageNamed("tilesheet")
 
-        @columns  = (size.width  / TILE_SIZE).to_i
-        @rows     = (size.height / TILE_SIZE).to_i
+        @columns  = (size.width  / Tile::SIZE).to_i
+        @rows     = (size.height / Tile::SIZE).to_i
       end
 
       def width
-        @columns * TILE_SIZE
+        @columns * Tile::SIZE
       end
 
       def height
-        @rows * TILE_SIZE
+        @rows * Tile::SIZE
       end
 
 
       # texture locate in (x, y)
       def tile_texture(x, y)
-        @w ||= TILE_SIZE / @texture.size.width
-        @h ||= TILE_SIZE / @texture.size.height
+        @w ||= Tile::SIZE / @texture.size.width
+        @h ||= Tile::SIZE / @texture.size.height
         rect = CGRectMake(x * @w, y * @h, @w, @h)
         SKTexture.textureWithRect(rect, inTexture: @texture)
       end
@@ -36,18 +34,13 @@ module Mogeon
         tiles = []
         @columns.times do |column|
           @rows.times do |row|
-
-            position = CGPointMake(column * TILE_SIZE, row * TILE_SIZE)
-
-            if column % 2 == 0
-              tile_sprite = SKSpriteNode.spriteNodeWithTexture(tile1)
+            if (column + row) % 2 == 0
+              tile = Tile.new(tile1)
             else
-              tile_sprite = SKSpriteNode.spriteNodeWithTexture(tile2)
+              tile = Tile.new(tile2)
             end
-
-            tile_sprite.anchorPoint = CGPointMake(0, 0)
-            tile_sprite.position = position
-            tiles << tile_sprite
+            tile.locate(column, row)
+            tiles << tile
           end
         end
 

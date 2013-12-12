@@ -1,21 +1,24 @@
 module Mogeon
-class Tile < SKTexture
+  class Tile < SKSpriteNode
 
-  SIZE = 32
+    SIZE = 32
 
-  class << self
-    attr_reader :texture
-    attr_reader :w, :h
-    def texture=(texture)
-      @texture = texture
-      @w = SIZE / texture.size.width
-      @h = SIZE / texture.size.height
+    class << self
+      def new(texture)
+        self.spriteNodeWithTexture(texture).tap do |node|
+          node.anchorPoint = CGPointMake(0, 0)
+        end
+      end
     end
 
-    def new(x, y)
-      rect = CGRectMake(x * w, y * h, w, h)
-      self.textureWithRect(rect, inTexture: texture)
+    def locate(x, y)
+      self.position = CGPointMake(x * SIZE, y * SIZE)
     end
+
+    def at
+      position = self.position
+      [(position.x / SIZE).to_i, (position.y / SIZE).to_i]
+    end
+
   end
-end
 end

@@ -81,14 +81,15 @@ class MyScene < SKScene
     (1 << 3) => :down,
   }
 
+  # Map にあるべき
   def moving_amount(direction)
     case direction
     when :right
-      [Tile::SIZE, 0]
+      [Tile::SIZE,  0]
     when :left
       [-Tile::SIZE, 0]
     when :up
-      [0, Tile::SIZE]
+      [0,  Tile::SIZE]
     when :down
       [0, -Tile::SIZE]
     end
@@ -111,6 +112,8 @@ class MyScene < SKScene
     end
 
     x, y = moving_amount(direction)
+
+    # Map に補助メソッドあるべき
     moving_nodes.each do |node|
       node_at = node.position
 
