@@ -19,7 +19,6 @@ class Friend < SKSpriteNode
   SIZE = 64
   class << self
     attr_reader :texture
-    attr_reader :texture
     attr_reader :w, :h
     def setup
       @texture = SKTexture.textureWithImageNamed("leatherarmor")

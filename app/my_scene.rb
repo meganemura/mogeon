@@ -36,34 +36,8 @@ class MyScene < SKScene
   end
 
   def setup_map
-    tilesheet = SKTexture.textureWithImageNamed("tilesheet")
-
-    Tile.texture = tilesheet
-    tile1 = Tile.new(6, 6)
-    tile2 = Tile.new(5, 6)
-
-    @tiles = []
-
-    @tile_width  = (self.frame.size.width / Tile::SIZE).to_i
-    @tile_height = (self.frame.size.height / Tile::SIZE).to_i
-
-    @tile_width.times do |i|
-      @tile_height.times do |j|
-
-        position = CGPointMake(i * Tile::SIZE, j * Tile::SIZE)
-
-        if i % 2 == 0
-          tile_sprite = SKSpriteNode.spriteNodeWithTexture(tile1)
-        else
-          tile_sprite = SKSpriteNode.spriteNodeWithTexture(tile2)
-        end
-
-        tile_sprite.anchorPoint = CGPointMake(0, 0)
-        tile_sprite.position = position
-        @tiles << tile_sprite
-        self << tile_sprite
-      end
-    end
+    Map.size = self.frame.size
+    Map.tiles.each { |tile| self << tile }
   end
 
   DEFAULT_FRIEND_SIZE = 1
@@ -132,7 +106,7 @@ class MyScene < SKScene
                 end
 
     touched_at = touched_node.position
-    moving_nodes = @tiles.select do |tile|
+    moving_nodes = Map.tiles.select do |tile|
       condition.call(tile.position, touched_at)
     end
 
@@ -144,27 +118,19 @@ class MyScene < SKScene
       new_y = node_at.y + y
 
       if new_x < 0
-        new_x += max_width
-      elsif new_x >= max_width
-        new_x -= max_width
+        new_x += Map.width
+      elsif new_x >= Map.width
+        new_x -= Map.width
       end
 
       if new_y < 0
-        new_y += max_height
-      elsif new_y >= max_height
-        new_y -= max_height
+        new_y += Map.height
+      elsif new_y >= Map.height
+        new_y -= Map.height
       end
 
       node.setPosition(CGPointMake(new_x, new_y))
     end
-  end
-
-  def max_height
-    @tile_height * Tile::SIZE
-  end
-
-  def max_width
-    @tile_width * Tile::SIZE
   end
 
 end
