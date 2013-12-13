@@ -81,20 +81,6 @@ class MyScene < SKScene
     (1 << 3) => :down,
   }
 
-  # Map にあるべき
-  def moving_amount(direction)
-    case direction
-    when :right
-      [Tile::SIZE,  0]
-    when :left
-      [-Tile::SIZE, 0]
-    when :up
-      [0,  Tile::SIZE]
-    when :down
-      [0, -Tile::SIZE]
-    end
-  end
-
   def swipe_node(touch_location, direction)
     touched_node = self.nodeAtPoint(touch_location)
     return unless touched_node.is_a? SKSpriteNode
@@ -113,26 +99,36 @@ class MyScene < SKScene
 
     x, y = moving_amount(direction)
 
-    # Map に補助メソッドあるべき
     moving_nodes.each do |node|
       node_at = node.position
 
-      new_x = node_at.x + x
-      new_y = node_at.y + y
-
-      if new_x < 0
-        new_x += Map.width
-      elsif new_x >= Map.width
-        new_x -= Map.width
-      end
-
-      if new_y < 0
-        new_y += Map.height
-      elsif new_y >= Map.height
-        new_y -= Map.height
-      end
+      new_x = round(node_at.x + x, Map.width)
+      new_y = round(node_at.y + y, Map.height)
 
       node.setPosition(CGPointMake(new_x, new_y))
+    end
+  end
+
+  def moving_amount(direction)
+    case direction
+    when :right
+      [Tile::SIZE,  0]
+    when :left
+      [-Tile::SIZE, 0]
+    when :up
+      [0,  Tile::SIZE]
+    when :down
+      [0, -Tile::SIZE]
+    end
+  end
+
+  def round(size, max)
+    if size < 0
+      size + max
+    elsif max <= size
+      size - max
+    else
+      size
     end
   end
 

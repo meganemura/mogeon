@@ -33,7 +33,6 @@ module Mogeon
             tiles << tile
           end
         end
-
         tiles
       end
     end
