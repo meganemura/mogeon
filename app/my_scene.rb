@@ -27,12 +27,21 @@ class MyScene < SKScene
     end
   end
 
-  def createSceneContents
+  module State
+    Player      = 'Player'.freeze
+    Friend      = 'Friend'.freeze
+    Enemy       = 'Enemy'.freeze
+    Neutral     = 'Neutral'.freeze
+    Environment = 'Environment'.freeze
+  end
 
+  def createSceneContents
     self.backgroundColor = SKColor.darkGrayColor
 
+    @state = State::Player
     setup_map
     setup_character
+    setup_hud
   end
 
   def setup_map
@@ -53,18 +62,52 @@ class MyScene < SKScene
     # setup neutrals
   end
 
-  # XXX: Map class のインスタンスメソッドにしたい
+  # TODO: locate は friends を Map の座標で設定する
+  #       Friend#locate にしたい
+  #       addChild は MyScene で行う
   def locate(character)
+    # FIXME
     character.setPosition(CGPointMake(0, 0))
     self << character
   end
 
+  STATE_HUD_NAME = 'state_hud'.freeze
+  def setup_hud
+    score_label = SKLabelNode.labelNodeWithFontNamed("Courier").tap do |config|
+      config.name = STATE_HUD_NAME
+      config.fontSize = 15
+      config.fontColor = SKColor.greenColor
+      config.text = "State: #{@state}"
+      config.position = CGPointMake(
+        20 + config.frame.size.width / 2,
+        self.size.height - (20 + config.frame.size.height)
+      )
+    end
+    self.addChild(score_label)
+  end
+  def update_hud
+    state_hud = self.childNodeWithName(STATE_HUD_NAME)
+    state_hud.text = "State: #{@state}"
+  end
+
+  # Called before each frame is rendered
   def update(current_time)
-    # Called before each frame is rendered
+
+    # TODO: update hud when state changed
+    if @old_state != @state
+      @old_state = @state
+      update_hud
+    end
+
+  end
+
+  def user_controllable?
+    [State::Player].include?(@state)
   end
 
   # UISwipeGestureRecognizer
   def swipe(recognizer)
+    return unless user_controllable?
     case recognizer.state
     when UIGestureRecognizerStateRecognized
       touch_location = recognizer.locationInView(recognizer.view)
@@ -72,6 +115,7 @@ class MyScene < SKScene
       direction = DIRECTION_MAP[recognizer.direction]
       self.swipe_node(touch_location, direction)
     end
+    @state = State::Friend
   end
 
   DIRECTION_MAP = {
