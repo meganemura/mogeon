@@ -5,8 +5,11 @@ module Mogeon
     SCALE = 2.0
     SIZE = SCALE * REAL_SIZE
 
+    TEXTURE = SKTexture.textureWithImageNamed("tilesheet")
+
     class << self
-      def new(texture)
+      def new(x, y)
+        texture = tile_at_texture(x, y)
         self.spriteNodeWithTexture(texture).tap do |node|
           node.anchorPoint = CGPointMake(0, 0)
           node.scale = SCALE
@@ -15,6 +18,13 @@ module Mogeon
 
       def size
         SCALE * SIZE
+      end
+
+      def tile_at_texture(x, y)
+        w = REAL_SIZE / TEXTURE.size.width
+        h = REAL_SIZE / TEXTURE.size.height
+        rect = CGRectMake(x * w, y * h, w, h)
+        SKTexture.textureWithRect(rect, inTexture: TEXTURE)
       end
     end
 
