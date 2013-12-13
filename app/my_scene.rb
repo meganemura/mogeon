@@ -93,7 +93,8 @@ class MyScene < SKScene
                 end
 
     touched_at = touched_node.position
-    moving_nodes = Map.tiles.select do |tile|
+    nodes = [Map.tiles, @friends].flatten
+    moving_nodes = nodes.select do |tile|
       condition.call(tile.position, touched_at)
     end
 
