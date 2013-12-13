@@ -1,13 +1,20 @@
 module Mogeon
   class Tile < SKSpriteNode
 
-    SIZE = 32
+    REAL_SIZE = 32
+    SCALE = 2.0
+    SIZE = SCALE * REAL_SIZE
 
     class << self
       def new(texture)
         self.spriteNodeWithTexture(texture).tap do |node|
           node.anchorPoint = CGPointMake(0, 0)
+          node.scale = SCALE
         end
+      end
+
+      def size
+        SCALE * SIZE
       end
     end
 

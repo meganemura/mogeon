@@ -18,12 +18,11 @@ module Mogeon
         @rows * Tile::SIZE
       end
 
-
       # texture locate in (x, y)
       def tile_texture(x, y)
-        @w ||= Tile::SIZE / @texture.size.width
-        @h ||= Tile::SIZE / @texture.size.height
-        rect = CGRectMake(x * @w, y * @h, @w, @h)
+        @w ||= Tile::REAL_SIZE / @texture.size.width
+        @h ||= Tile::REAL_SIZE / @texture.size.height
+        rect = CGRectMake(x * w, y * h, w, h)
         SKTexture.textureWithRect(rect, inTexture: @texture)
       end
 
