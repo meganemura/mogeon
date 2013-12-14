@@ -92,7 +92,7 @@ module Mogeon
     end
 
     def move_friend
-      x, y = moving_amount(:up)
+      x, y = Map.moving_amount(:up)
       @friends.each do |node|
         done_action = SKAction.runBlock(lambda {
           @tile_moving = false
@@ -132,7 +132,7 @@ module Mogeon
       @tile_moving = true
 
       # スワイプの direction に合わせて nodes を移動させる
-      x, y = moving_amount(direction)
+      x, y = Map.moving_amount(direction)
       target_nodes(touched_node, with: direction).each do |node|
         # TODO: nodes の数だけ実行されるのを1回に変更したい
         done_action = SKAction.runBlock(lambda {
@@ -162,17 +162,5 @@ module Mogeon
       end
     end
 
-    def moving_amount(direction)
-      case direction
-      when :right
-        [Tile::SIZE,  0]
-      when :left
-        [-Tile::SIZE, 0]
-      when :up
-        [0,  Tile::SIZE]
-      when :down
-        [0, -Tile::SIZE]
-      end
-    end
   end
 end

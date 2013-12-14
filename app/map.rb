@@ -35,6 +35,19 @@ module Mogeon
         end
         tiles
       end
+
+      def moving_amount(direction)
+        case direction
+        when :right
+          [Tile::SIZE,  0]
+        when :left
+          [-Tile::SIZE, 0]
+        when :up
+          [0,  Tile::SIZE]
+        when :down
+          [0, -Tile::SIZE]
+        end
+      end
     end
   end
 end
