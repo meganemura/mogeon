@@ -12,7 +12,7 @@ module Mogeon
       attr_accessor :tile_size
 
       def new(x, y)
-        setup unless setup?
+        setup_once
         rect = CGRectMake(x * @w, y * @h, @w, @h)
         partial_texture = SKTexture.textureWithRect(rect, inTexture: @texture)
 
@@ -28,15 +28,13 @@ module Mogeon
         instance
       end
 
-      def setup
-        @texture = SKTexture.textureWithImageNamed(self::TEXTURE)
-        @w = self::REAL_SIZE / @texture.size.width
-        @h = self::REAL_SIZE / @texture.size.height
-        @setup = true
-      end
-
-      def setup?
-        !! @setup
+      def setup_once
+        unless @setup_done
+          @setup_done = true
+          @texture = SKTexture.textureWithImageNamed(self::TEXTURE)
+          @w = self::REAL_SIZE / @texture.size.width
+          @h = self::REAL_SIZE / @texture.size.height
+        end
       end
     end
 
