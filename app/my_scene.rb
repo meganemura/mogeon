@@ -27,18 +27,10 @@ module Mogeon
       end
     end
 
-    module State
-      Player      = 'Player'.freeze
-      Friend      = 'Friend'.freeze
-      Enemy       = 'Enemy'.freeze
-      Neutral     = 'Neutral'.freeze
-      Environment = 'Environment'.freeze
-    end
-
     def createSceneContents
       self.backgroundColor = SKColor.darkGrayColor
 
-      @state = State::Player
+      @state = State.new
       setup_map
       setup_character
       setup_hud
@@ -78,7 +70,7 @@ module Mogeon
         config.name = STATE_HUD_NAME
         config.fontSize = 15
         config.fontColor = SKColor.greenColor
-        config.text = "State: #{@state}"
+        config.text = "State: #{@state.current}"
         config.position = CGPointMake(
           20 + config.frame.size.width / 2,
           self.size.height - (20 + config.frame.size.height)
@@ -89,17 +81,17 @@ module Mogeon
 
     def update_hud
       state_hud = self.childNodeWithName(STATE_HUD_NAME)
-      state_hud.text = "State: #{@state}"
+      state_hud.text = "State: #{@state.current}"
     end
 
     # Called before each frame is rendered
     def update(current_time)
 
-      if @old_state != @state
-        @old_state = @state
+      if @old_state != @state.current
+        @old_state = @state.current
         update_hud
 
-        case @state
+        case @state.current
         when State::Friend
           move_friend
         end
@@ -113,14 +105,14 @@ module Mogeon
       @friends.each do |node|
         done_action = SKAction.runBlock(lambda {
           @tile_moving = false
-          @state = State::Player
+          @state.set(State::Player)
         })
         node.move(x, y, done_action)
       end
     end
 
     def user_controllable?
-      [State::Player].include?(@state)
+      [State::Player].include?(@state.current)
     end
 
     # UISwipeGestureRecognizer
@@ -154,7 +146,7 @@ module Mogeon
         # TODO: nodes の数だけ実行されるのを1回に変更したい
         done_action = SKAction.runBlock(lambda {
           @tile_moving = false
-          @state = State::Friend
+          @state.set(State::Friend)
         })
         node.move(x, y, done_action)
       end
