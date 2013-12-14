@@ -86,6 +86,7 @@ module Mogeon
       end
       self.addChild(score_label)
     end
+
     def update_hud
       state_hud = self.childNodeWithName(STATE_HUD_NAME)
       state_hud.text = "State: #{@state}"
@@ -94,27 +95,27 @@ module Mogeon
     # Called before each frame is rendered
     def update(current_time)
 
-      # TODO: update hud when state changed
       if @old_state != @state
         @old_state = @state
         update_hud
+
         case @state
         when State::Friend
           move_friend
         end
+
       end
 
     end
 
     def move_friend
-      @friends.each do |friend|
-        wait_duration = 1.0
-        wait_action = SKAction.waitForDuration(wait_duration)
+      x, y = moving_amount(:up)
+      @friends.each do |node|
         done_action = SKAction.runBlock(lambda {
+          @tile_moving = false
           @state = State::Player
         })
-        wait_action_with_done = SKAction.sequence([wait_action, done_action])
-        friend.runAction(wait_action_with_done, withKey: "friend_waiting")
+        node.move(x, y, done_action)
       end
     end
 
