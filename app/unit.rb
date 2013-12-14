@@ -1,6 +1,8 @@
 module Mogeon
-class Unit < SKTexture
+class Unit < SKSpriteNode
   class << self
+
+    attr_accessor :tile_size
 
     # TODO: Create unit subclass
     #   Unit.register('leatherarmor', as: :Friend)
@@ -15,7 +17,7 @@ end
 
 # Friend クラスが texture を持っていて
 # インスタンスが texture のどの場所を利用するかを持っていればいい
-class Friend < SKSpriteNode
+class Friend < Unit
   SIZE = 64
   class << self
     def setup
@@ -33,10 +35,12 @@ class Friend < SKSpriteNode
       setup unless setup?
       rect = CGRectMake(x * @w, y * @h, @w, @h)
       partial_texture = SKTexture.textureWithRect(rect, inTexture: @texture)
-      instance = self.spriteNodeWithTexture(partial_texture).tap do |sprite|
-        sprite.x = x
-        sprite.y = y
-        sprite.anchorPoint = CGPointMake(0, 0)
+      instance = self.spriteNodeWithTexture(partial_texture).tap do |config|
+        config.x = x
+        config.y = y
+        config.anchorPoint = CGPointMake(0, 0)
+        config.locate(x, y)
+        config.zPosition = 1
       end
 
       instance
@@ -44,5 +48,13 @@ class Friend < SKSpriteNode
   end
 
   attr_accessor :x, :y
+
+  def locate(x, y)
+    @x = x
+    @y = y
+    position = CGPointMake(@x * self.class.tile_size, @y * self.class.tile_size)
+    self.setPosition(position)
+  end
+
 end
 end

@@ -13,11 +13,12 @@ module Mogeon
         self.spriteNodeWithTexture(texture).tap do |node|
           node.anchorPoint = CGPointMake(0, 0)
           node.scale = SCALE
+          node.zPosition = 0
         end
       end
 
       def size
-        SCALE * SIZE
+        SCALE * REAL_SIZE
       end
 
       def tile_at_texture(x, y)

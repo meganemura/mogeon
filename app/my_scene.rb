@@ -51,10 +51,11 @@ class MyScene < SKScene
 
   DEFAULT_FRIEND_SIZE = 1
   def setup_character
+    Friend.tile_size = Tile.size
     # setup friends
     @friends = DEFAULT_FRIEND_SIZE.times.map { Friend.new(0, 0) }
     @friends.each do |friend|
-      locate(friend)
+      self.addChild(friend)
     end
 
     # setup enemies
@@ -169,7 +170,7 @@ class MyScene < SKScene
 
       target_location = CGPointMake(new_x, new_y)
 
-      move_duration = 3.0
+      move_duration = 1.0
       move_action = SKAction.moveTo(target_location, duration: move_duration)
       done_action = SKAction.runBlock(lambda {
         @tile_moving = false
