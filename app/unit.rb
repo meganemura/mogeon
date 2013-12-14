@@ -46,5 +46,29 @@ module Mogeon
       position = CGPointMake(@x * self.class::SIZE, @y * self.class::SIZE)
       self.setPosition(position)
     end
+
+    def move(x, y, callback)
+      node_at = self.position
+
+      new_x = round(node_at.x + x, Map.width)
+      new_y = round(node_at.y + y, Map.height)
+
+      target_location = CGPointMake(new_x, new_y)
+
+      move_duration = 0.5
+      move_action = SKAction.moveTo(target_location, duration: move_duration)
+      move_action_with_done = SKAction.sequence([move_action, callback])
+      self.runAction(move_action_with_done, withKey: "tile_moving")
+    end
+
+    def round(size, max)
+      if size < 0
+        size + max
+      elsif max <= size
+        size - max
+      else
+        size
+      end
+    end
   end
 end

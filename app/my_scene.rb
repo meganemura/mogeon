@@ -147,6 +147,21 @@ class MyScene < SKScene
     return if @tile_moving
     @tile_moving = true
 
+    # スワイプの direction に合わせて nodes を移動させる
+    x, y = moving_amount(direction)
+    target_nodes(touched_node, with: direction).each do |node|
+      # TODO: nodes の数だけ実行されるのを1回に変更したい
+      done_action = SKAction.runBlock(lambda {
+        @tile_moving = false
+        @state = State::Friend
+      })
+      node.move(x, y, done_action)
+    end
+  end
+
+
+  # タッチされた node と、スワイプ方向から移動する nodes を選ぶ
+  def target_nodes(touched_node, with: direction)
     condition = case direction
                 when :right, :left
                   lambda {|a, b| a.y == b.y }
@@ -155,31 +170,12 @@ class MyScene < SKScene
                 end
 
     touched_at = touched_node.position
+
     nodes = [Map.tiles, @friends].flatten
-    moving_nodes = nodes.select do |tile|
+
+    nodes.select do |tile|
       condition.call(tile.position, touched_at)
     end
-
-    x, y = moving_amount(direction)
-
-    moving_nodes.each do |node|
-      node_at = node.position
-
-      new_x = round(node_at.x + x, Map.width)
-      new_y = round(node_at.y + y, Map.height)
-
-      target_location = CGPointMake(new_x, new_y)
-
-      move_duration = 0.5
-      move_action = SKAction.moveTo(target_location, duration: move_duration)
-      done_action = SKAction.runBlock(lambda {
-        @tile_moving = false
-        @state = State::Friend
-      })
-      move_action_with_done = SKAction.sequence([move_action, done_action])
-      node.runAction(move_action_with_done, withKey: "tile_moving")
-    end
-
   end
 
   def moving_amount(direction)
@@ -194,16 +190,5 @@ class MyScene < SKScene
       [0, -Tile::SIZE]
     end
   end
-
-  def round(size, max)
-    if size < 0
-      size + max
-    elsif max <= size
-      size - max
-    else
-      size
-    end
-  end
-
 end
 end
