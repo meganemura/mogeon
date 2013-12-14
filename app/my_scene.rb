@@ -97,8 +97,24 @@ class MyScene < SKScene
     if @old_state != @state
       @old_state = @state
       update_hud
+      case @state
+      when State::Friend
+        move_friend
+      end
     end
 
+  end
+
+  def move_friend
+    @friends.each do |friend|
+      wait_duration = 1.0
+      wait_action = SKAction.waitForDuration(wait_duration)
+      done_action = SKAction.runBlock(lambda {
+        @state = State::Player
+      })
+      wait_action_with_done = SKAction.sequence([wait_action, done_action])
+      friend.runAction(wait_action_with_done, withKey: "friend_waiting")
+    end
   end
 
   def user_controllable?
@@ -115,7 +131,6 @@ class MyScene < SKScene
       direction = DIRECTION_MAP[recognizer.direction]
       self.swipe_node(touch_location, direction)
     end
-    @state = State::Friend
   end
 
   DIRECTION_MAP = {
@@ -128,6 +143,8 @@ class MyScene < SKScene
   def swipe_node(touch_location, direction)
     touched_node = self.nodeAtPoint(touch_location)
     return unless touched_node.is_a? SKSpriteNode
+    return if @tile_moving
+    @tile_moving = true
 
     condition = case direction
                 when :right, :left
@@ -150,8 +167,18 @@ class MyScene < SKScene
       new_x = round(node_at.x + x, Map.width)
       new_y = round(node_at.y + y, Map.height)
 
-      node.setPosition(CGPointMake(new_x, new_y))
+      target_location = CGPointMake(new_x, new_y)
+
+      move_duration = 3.0
+      move_action = SKAction.moveTo(target_location, duration: move_duration)
+      done_action = SKAction.runBlock(lambda {
+        @tile_moving = false
+        @state = State::Friend
+      })
+      move_action_with_done = SKAction.sequence([move_action, done_action])
+      node.runAction(move_action_with_done, withKey: "tile_moving")
     end
+
   end
 
   def moving_amount(direction)
