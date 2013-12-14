@@ -170,7 +170,7 @@ class MyScene < SKScene
 
       target_location = CGPointMake(new_x, new_y)
 
-      move_duration = 1.0
+      move_duration = 0.5
       move_action = SKAction.moveTo(target_location, duration: move_duration)
       done_action = SKAction.runBlock(lambda {
         @tile_moving = false

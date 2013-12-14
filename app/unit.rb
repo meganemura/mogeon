@@ -1,33 +1,42 @@
 module Mogeon
   class Unit < SKSpriteNode
+
+    REAL_SIZE = 0
+    SCALE = 1.0
+    SIZE = SCALE * REAL_SIZE
+    TEXTURE = ""
+    Z_POSITION = 0
+
     class << self
 
       attr_accessor :tile_size
-
-      def setup
-        @texture = SKTexture.textureWithImageNamed(self::TEXTURE)
-        @w = self::SIZE / @texture.size.width
-        @h = self::SIZE / @texture.size.height
-        @setup = true
-      end
-
-      def setup?
-        !! @setup
-      end
 
       def new(x, y)
         setup unless setup?
         rect = CGRectMake(x * @w, y * @h, @w, @h)
         partial_texture = SKTexture.textureWithRect(rect, inTexture: @texture)
+
         instance = self.spriteNodeWithTexture(partial_texture).tap do |config|
           config.x = x
           config.y = y
           config.anchorPoint = CGPointMake(0, 0)
+          config.scale = self::SCALE
           config.locate(x, y)
-          config.zPosition = 1
+          config.zPosition = self::Z_POSITION
         end
 
         instance
+      end
+
+      def setup
+        @texture = SKTexture.textureWithImageNamed(self::TEXTURE)
+        @w = self::REAL_SIZE / @texture.size.width
+        @h = self::REAL_SIZE / @texture.size.height
+        @setup = true
+      end
+
+      def setup?
+        !! @setup
       end
     end
 
@@ -36,14 +45,8 @@ module Mogeon
     def locate(x, y)
       @x = x
       @y = y
-      position = CGPointMake(@x * self.class.tile_size, @y * self.class.tile_size)
+      position = CGPointMake(@x * self.class::SIZE, @y * self.class::SIZE)
       self.setPosition(position)
     end
-
-  end
-
-  class Friend < Unit
-    SIZE = 64
-    TEXTURE = "leatherarmor"
   end
 end

@@ -12,4 +12,6 @@ Motion::Project::App.setup do |app|
   # Use `rake config' to see complete project settings.
   app.name = 'mogeon'
   app.frameworks += ["SpriteKit"]
+  app.files_dependencies 'app/unit/friend.rb' => 'app/unit.rb'
+  app.files_dependencies 'app/unit/tile.rb' => 'app/unit.rb'
 end
