@@ -18,12 +18,10 @@ end
 class Friend < SKSpriteNode
   SIZE = 64
   class << self
-    attr_reader :texture
-    attr_reader :w, :h
     def setup
       @texture = SKTexture.textureWithImageNamed("leatherarmor")
-      @w = SIZE / texture.size.width
-      @h = SIZE / texture.size.height
+      @w = SIZE / @texture.size.width
+      @h = SIZE / @texture.size.height
       @setup = true
     end
 
@@ -33,9 +31,9 @@ class Friend < SKSpriteNode
 
     def new(x, y)
       setup unless setup?
-      rect = CGRectMake(x * w, y * h, w, h)
-      texture = SKTexture.textureWithRect(rect, inTexture: @texture)
-      instance = self.spriteNodeWithTexture(texture).tap do |sprite|
+      rect = CGRectMake(x * @w, y * @h, @w, @h)
+      partial_texture = SKTexture.textureWithRect(rect, inTexture: @texture)
+      instance = self.spriteNodeWithTexture(partial_texture).tap do |sprite|
         sprite.x = x
         sprite.y = y
         sprite.anchorPoint = CGPointMake(0, 0)
