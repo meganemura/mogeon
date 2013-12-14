@@ -55,15 +55,6 @@ module Mogeon
       # setup neutrals
     end
 
-    # TODO: locate は friends を Map の座標で設定する
-    #       Friend#locate にしたい
-    #       addChild は MyScene で行う
-    def locate(character)
-      # FIXME
-      character.setPosition(CGPointMake(0, 0))
-      self << character
-    end
-
     STATE_HUD_NAME = 'state_hud'.freeze
     def setup_hud
       score_label = SKLabelNode.labelNodeWithFontNamed("Courier").tap do |config|
