@@ -13,9 +13,8 @@ class ViewController < UIViewController
     sk_view.showsFPS = true
     sk_view.showsNodeCount = true
 
-    # Create and configure the scene.
-    scene = Mogeon::MyScene.sceneWithSize(sk_view.bounds.size)
-    scene.scaleMode = SKSceneScaleModeAspectFill
+    # # Create and configure the scene.
+    scene = Mogeon::MenuScene.sceneWithSize(sk_view.bounds.size)
 
     # Present the scene.
     sk_view.presentScene(scene)
