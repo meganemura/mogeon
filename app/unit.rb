@@ -50,7 +50,7 @@ module Mogeon
       self.setPosition(position)
     end
 
-    def move(x, y, callback)
+    def move(x, y, callback = nil)
       node_at = self.position
 
       new_x = round(node_at.x + x, Map.width)
@@ -72,6 +72,18 @@ module Mogeon
       else
         size
       end
+    end
+
+    def activate
+      @active = true
+    end
+
+    def deactivate
+      @active = false
+    end
+
+    def active?
+      !! @active
     end
   end
 end

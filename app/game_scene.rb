@@ -89,35 +89,45 @@ module Mogeon
       if @old_state != @state.current
         @old_state = @state.current
         update_hud
+      end
 
+      # 動いている Unit がなければ次の処理を行う
+      # いい方法ではなさそう
+      unless @unit_moving
         case @state.current
         when State::Friend
-          move_friend
+          move_one_friend
         when State::Enemy
-          move_enemy
+          move_one_enemy
         end
-
       end
-
     end
 
-    def move_friend
+    def move_one_friend
       x, y = Map.moving_amount(:up)
-      @friends.each do |friend|
-        done_action = SKAction.runBlock(lambda {
-          @state.set(State::Enemy)
-        })
+      friend = @friends.find { |friend| friend.active? }
+      if friend
+        @unit_moving = true
+        done_action = SKAction.runBlock(lambda {@unit_moving = false})
         friend.move(x, y, done_action)
+        friend.deactivate
+      else
+        @state.set(State::Enemy)
+        @enemies.each { |enemy| enemy.activate }
+        # activate enemy
       end
     end
 
-    def move_enemy
+    def move_one_enemy
       x, y = Map.moving_amount(:down)
-      @enemies.each do |enemy|
-        done_action = SKAction.runBlock(lambda {
-          @state.set(State::Player)
-        })
+      enemy = @enemies.find { |enemy| enemy.active? }
+      if enemy
+        @unit_moving = true
+        done_action = SKAction.runBlock(lambda {@unit_moving = false})
         enemy.move(x, y, done_action)
+        enemy.deactivate
+      else
+        @state.set(State::Player)
       end
     end
 
@@ -156,6 +166,7 @@ module Mogeon
         # TODO: nodes の数だけ実行されるのを1回に変更したい
         done_action = SKAction.runBlock(lambda {
           @tile_moving = false
+          @friends.each { |friend| friend.activate }
           @state.set(State::Friend)
         })
         node.move(x, y, done_action)
