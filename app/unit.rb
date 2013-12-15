@@ -70,6 +70,9 @@ module Mogeon
     # このユニットが現在動かす対象かどうか
     #     全てのユニットがこのパラメータを持つよりも
     #     動かす対象のユニットをひとつ持つほうが良さそう
+    # TODO:
+    #   Player 2回行動
+    #   Friend 1回行動、のように変動できるようにしたい
     def activate
       @active = true
     end

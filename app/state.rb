@@ -1,8 +1,5 @@
 module Mogeon
 
-  # TODO:
-  #   Player 2回行動
-  #   Friend 1回行動、のように変動できるようにしたい
   class State
     Player      = 'Player'.freeze
     Friend      = 'Friend'.freeze
