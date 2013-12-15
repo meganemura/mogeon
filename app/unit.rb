@@ -3,7 +3,6 @@ module Mogeon
 
     REAL_SIZE = 0
     SCALE = 1.0
-    SIZE = SCALE * REAL_SIZE
     TEXTURE = ""
     Z_POSITION = 0
 
@@ -36,6 +35,10 @@ module Mogeon
           @h = self::REAL_SIZE / @texture.size.height
         end
       end
+
+      def size
+        self::REAL_SIZE * self::SCALE
+      end
     end
 
     attr_accessor :x, :y
@@ -43,7 +46,7 @@ module Mogeon
     def locate(x, y)
       @x = x
       @y = y
-      position = CGPointMake(@x * self.class::SIZE, @y * self.class::SIZE)
+      position = CGPointMake(@x * self.class.size, @y * self.class.size)
       self.setPosition(position)
     end
 

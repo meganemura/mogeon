@@ -4,16 +4,16 @@ module Mogeon
     class << self
 
       def size=(size)
-        @columns  = (size.width  / Tile::SIZE).to_i
-        @rows     = (size.height / Tile::SIZE).to_i
+        @columns  = (size.width  / Tile.size).to_i
+        @rows     = (size.height / Tile.size).to_i
       end
 
       def width
-        @columns * Tile::SIZE
+        @columns * Tile.size
       end
 
       def height
-        @rows * Tile::SIZE
+        @rows * Tile.size
       end
 
       def tiles
@@ -39,13 +39,13 @@ module Mogeon
       def moving_amount(direction)
         case direction
         when :right
-          [Tile::SIZE,  0]
+          [Tile.size,  0]
         when :left
-          [-Tile::SIZE, 0]
+          [-Tile.size, 0]
         when :up
-          [0,  Tile::SIZE]
+          [0,  Tile.size]
         when :down
-          [0, -Tile::SIZE]
+          [0, -Tile.size]
         end
       end
     end
