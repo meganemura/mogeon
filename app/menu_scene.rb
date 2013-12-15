@@ -22,7 +22,7 @@ module Mogeon
         friend.position = location
         friend.runAction(
           SKAction.sequence([
-            SKAction.rotateByAngle(2 * Math::PI, duration: 1),
+            SKAction.rotateByAngle(2 * Math::PI, duration: 0.5),
             SKAction.runBlock(lambda {
               reveal = SKTransition.doorsOpenHorizontalWithDuration(1.0)
               my_scene = MyScene.alloc.initWithSize(self.size)

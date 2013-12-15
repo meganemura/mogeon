@@ -42,15 +42,22 @@ module Mogeon
     end
 
     DEFAULT_FRIEND_SIZE = 1
+    DEFAULT_ENEMY_SIZE  = 1
     def setup_character
-      Friend.tile_size = Tile.size
       # setup friends
       @friends = DEFAULT_FRIEND_SIZE.times.map { Friend.new(0, 0) }
       @friends.each do |friend|
+        # TODO: set friend to the map
         self.addChild(friend)
       end
 
       # setup enemies
+      @enemies = DEFAULT_ENEMY_SIZE.times.map { Enemy.new(0, 0) }
+      @enemies.each do |enemy|
+        # TODO: set enemy to the map
+        enemy.locate(3, 7)
+        self.addChild(enemy)
+      end
 
       # setup neutrals
     end
@@ -85,6 +92,8 @@ module Mogeon
         case @state.current
         when State::Friend
           move_friend
+        when State::Enemy
+          move_enemy
         end
 
       end
@@ -93,12 +102,21 @@ module Mogeon
 
     def move_friend
       x, y = Map.moving_amount(:up)
-      @friends.each do |node|
+      @friends.each do |friend|
         done_action = SKAction.runBlock(lambda {
-          @tile_moving = false
+          @state.set(State::Enemy)
+        })
+        friend.move(x, y, done_action)
+      end
+    end
+
+    def move_enemy
+      x, y = Map.moving_amount(:down)
+      @enemies.each do |enemy|
+        done_action = SKAction.runBlock(lambda {
           @state.set(State::Player)
         })
-        node.move(x, y, done_action)
+        enemy.move(x, y, done_action)
       end
     end
 
@@ -155,7 +173,7 @@ module Mogeon
 
       touched_at = touched_node.position
 
-      nodes = [Map.tiles, @friends].flatten
+      nodes = [Map.tiles, @friends, @enemies].flatten
 
       nodes.select do |tile|
         condition.call(tile.position, touched_at)
