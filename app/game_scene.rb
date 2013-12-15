@@ -41,21 +41,22 @@ module Mogeon
       Map.tiles.each { |tile| self << tile }
     end
 
-    DEFAULT_FRIEND_SIZE = 1
-    DEFAULT_ENEMY_SIZE  = 1
+    DEFAULT_FRIEND_SIZE = 2
+    DEFAULT_ENEMY_SIZE  = 2
     def setup_character
       # setup friends
       @friends = DEFAULT_FRIEND_SIZE.times.map { Friend.new(0, 0) }
-      @friends.each do |friend|
+      @friends.each_with_index do |friend, i|
         # TODO: set friend to the map
+        friend.locate(i, 0)
         self.addChild(friend)
       end
 
       # setup enemies
       @enemies = DEFAULT_ENEMY_SIZE.times.map { Enemy.new(0, 0) }
-      @enemies.each do |enemy|
+      @enemies.each_with_index do |enemy, i|
         # TODO: set enemy to the map
-        enemy.locate(3, 7)
+        enemy.locate(i, 7)
         self.addChild(enemy)
       end
 
