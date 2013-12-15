@@ -25,7 +25,7 @@ module Mogeon
             SKAction.rotateByAngle(2 * Math::PI, duration: 0.5),
             SKAction.runBlock(lambda {
               reveal = SKTransition.doorsOpenHorizontalWithDuration(1.0)
-              my_scene = MyScene.alloc.initWithSize(self.size)
+              my_scene = GameScene.alloc.initWithSize(self.size)
               my_scene.scaleMode = SKSceneScaleModeAspectFill
               self.view.presentScene(my_scene, transition: reveal)
             }),
