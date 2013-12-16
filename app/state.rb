@@ -1,5 +1,9 @@
 module Mogeon
 
+  # TODO:
+  #   State が変わった時に実行する処理を登録したい
+  #   state = State.new
+  #   state.register :changed => Proc.new
   class State
     Player      = 'Player'.freeze
     Friend      = 'Friend'.freeze
