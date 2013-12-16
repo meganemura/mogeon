@@ -50,7 +50,7 @@ module Mogeon
       self.setPosition(position)
     end
 
-    # マップ座標で (x, y) の差分を自分の position に追加する
+    # (x, y) の差分を自分の position に追加する
     def move(x, y, callback = nil)
       node_at = self.position
 

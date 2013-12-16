@@ -29,5 +29,16 @@ module Mogeon
     def set(state)
       @state = state
     end
+
+    def next
+      next_state = case @state
+                   when Player      then Friend
+                   when Friend      then Enemy
+                   when Neutral     then Environment
+                   when Environment then Player
+                   else                  Player
+                   end
+      @state = next_state
+    end
   end
 end

@@ -30,6 +30,7 @@ module Mogeon
     def createSceneContents
       self.backgroundColor = SKColor.darkGrayColor
 
+      @queue = []
       @state = State.new
       setup_map
       setup_character
@@ -89,44 +90,38 @@ module Mogeon
       if @old_state != @state.current
         @old_state = @state.current
         update_hud
+        queue_when_state_changed(@state.current)
       end
 
-      # 動いている Unit がなければ次の処理を行う
-      # いい方法ではなさそう
-      unless @unit_moving
-        case @state.current
-        when State::Friend
-          move_one_friend
-        when State::Enemy
-          move_one_enemy
-        end
+      case @state.current
+      when State::Player
+        # noop?
+      else
+        process_queue
       end
     end
 
-    def move_one_friend
-      x, y = Map.moving_amount(:up)
-      friend = @friends.find { |friend| friend.active? }
-      if friend
-        @unit_moving = true
-        done_action = SKAction.runBlock(lambda {@unit_moving = false})
-        friend.move(x, y, done_action)
-        friend.deactivate
-      else
-        @state.set(State::Enemy)
-        @enemies.each { |enemy| enemy.activate }
-      end
+
+    def queue_when_state_changed(state)
+      @queue += case state
+                when State::Friend
+                  @friends
+                when State::Enemy
+                  @enemies
+                else
+                  []
+                end
     end
 
-    def move_one_enemy
-      x, y = Map.moving_amount(:down)
-      enemy = @enemies.find { |enemy| enemy.active? }
-      if enemy
-        @unit_moving = true
-        done_action = SKAction.runBlock(lambda {@unit_moving = false})
-        enemy.move(x, y, done_action)
-        enemy.deactivate
-      else
-        @state.set(State::Player)
+    def process_queue
+      return if @current_object
+
+      if @current_object = @queue.shift
+        x, y = Map.moving_amount(:up)
+        done_action = SKAction.runBlock(lambda {@current_object = nil})
+        @current_object.move(x, y, done_action)
+      elsif @queue.empty?
+        @state.next
       end
     end
 
