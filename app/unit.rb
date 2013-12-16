@@ -50,11 +50,12 @@ module Mogeon
       self.setPosition(position)
     end
 
+    # マップ座標で (x, y) の差分を自分の position に追加する
     def move(x, y, callback = nil)
       node_at = self.position
 
-      new_x = round(node_at.x + x, Map.width)
-      new_y = round(node_at.y + y, Map.height)
+      new_x = (node_at.x + x) % Map.width
+      new_y = (node_at.y + y) % Map.height
 
       target_location = CGPointMake(new_x, new_y)
 
@@ -64,16 +65,11 @@ module Mogeon
       self.runAction(move_action_with_done, withKey: "tile_moving")
     end
 
-    def round(size, max)
-      if size < 0
-        size + max
-      elsif max <= size
-        size - max
-      else
-        size
-      end
-    end
 
+    # activate/deactivate/active?
+    # このユニットが現在動かす対象かどうか
+    #     全てのユニットがこのパラメータを持つよりも
+    #     動かす対象のユニットをひとつ持つほうが良さそう
     def activate
       @active = true
     end

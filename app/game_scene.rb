@@ -114,7 +114,6 @@ module Mogeon
       else
         @state.set(State::Enemy)
         @enemies.each { |enemy| enemy.activate }
-        # activate enemy
       end
     end
 
