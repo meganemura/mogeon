@@ -90,7 +90,7 @@ module Mogeon
       if @old_state != @state.current
         @old_state = @state.current
         update_hud
-        queue_when_state_changed(@state.current)
+        queue_movers
       end
 
       case @state.current
@@ -101,20 +101,17 @@ module Mogeon
       end
     end
 
-
-    def queue_when_state_changed(state)
-      @queue += case state
-                when State::Friend
-                  @friends
-                when State::Enemy
-                  @enemies
-                else
-                  []
-                end
+    def queue_movers
+      case @state.current
+      when State::Friend
+        @queue += @friends
+      when State::Enemy
+        @queue += @enemies
+      end
     end
 
     def process_queue
-      return if @current_object
+      return if processing?
 
       if @current_object = @queue.shift
         x, y = Map.moving_amount(:up)
@@ -123,6 +120,10 @@ module Mogeon
       elsif @queue.empty?
         @state.next
       end
+    end
+
+    def processing?
+      !! @current_object
     end
 
     def user_controllable?
