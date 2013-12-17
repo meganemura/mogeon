@@ -104,9 +104,9 @@ module Mogeon
     def queue_movers
       case @state.current
       when State::Friend
-        @queue += @friends
+        @queue += @friends.shuffle
       when State::Enemy
-        @queue += @enemies
+        @queue += @enemies.shuffle
       end
     end
 
