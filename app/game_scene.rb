@@ -48,16 +48,16 @@ module Mogeon
       # setup friends
       @friends = DEFAULT_FRIEND_SIZE.times.map { Friend.new(0, 0) }
       @friends.each_with_index do |friend, i|
-        # TODO: set friend to the map
         friend.locate(i, 0)
+        Map.movers << friend
         self.addChild(friend)
       end
 
       # setup enemies
       @enemies = DEFAULT_ENEMY_SIZE.times.map { Enemy.new(0, 0) }
       @enemies.each_with_index do |enemy, i|
-        # TODO: set enemy to the map
         enemy.locate(i, 7)
+        Map.movers << enemy
         self.addChild(enemy)
       end
 

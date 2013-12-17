@@ -16,6 +16,10 @@ module Mogeon
         @rows * Tile.size
       end
 
+      def movers
+        @movers ||= []
+      end
+
       def tiles
         @tiles ||= lay_tiles
       end
