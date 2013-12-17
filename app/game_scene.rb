@@ -152,16 +152,12 @@ module Mogeon
     def swipe_node(touch_location, direction)
       touched_node = self.nodeAtPoint(touch_location)
       return unless touched_node.is_a? SKSpriteNode
-      return if @tile_moving
-      @tile_moving = true
 
       # スワイプの direction に合わせて nodes を移動させる
       x, y = Map.moving_amount(direction)
       target_nodes(touched_node, with: direction).each do |node|
         # TODO: nodes の数だけ実行されるのを1回に変更したい
         done_action = SKAction.runBlock(lambda {
-          @tile_moving = false
-          @friends.each { |friend| friend.activate }
           @state.set(State::Friend)
         })
         node.move(x, y, done_action)

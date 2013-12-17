@@ -64,25 +64,5 @@ module Mogeon
       move_action_with_done = SKAction.sequence([move_action, callback].compact)
       self.runAction(move_action_with_done, withKey: "tile_moving")
     end
-
-
-    # activate/deactivate/active?
-    # このユニットが現在動かす対象かどうか
-    #     全てのユニットがこのパラメータを持つよりも
-    #     動かす対象のユニットをひとつ持つほうが良さそう
-    # TODO:
-    #   Player 2回行動
-    #   Friend 1回行動、のように変動できるようにしたい
-    def activate
-      @active = true
-    end
-
-    def deactivate
-      @active = false
-    end
-
-    def active?
-      !! @active
-    end
   end
 end
