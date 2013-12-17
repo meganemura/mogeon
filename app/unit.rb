@@ -10,6 +10,7 @@ module Mogeon
 
       attr_accessor :tile_size
 
+      # テクスチャの (x, y) を Sprite として利用する
       def new(x, y)
         setup_once
         rect = CGRectMake(x * @w, y * @h, @w, @h)
@@ -20,7 +21,6 @@ module Mogeon
           config.y = y
           config.anchorPoint = CGPointMake(0, 0)
           config.scale = self::SCALE
-          config.locate(x, y)
           config.zPosition = self::Z_POSITION
         end
 
@@ -52,10 +52,10 @@ module Mogeon
 
     # (x, y) の差分を自分の position に追加する
     def move(x, y, callback = nil)
-      node_at = self.position
-
-      new_x = (node_at.x + x) % Map.width
-      new_y = (node_at.y + y) % Map.height
+      @x += x
+      @y += y
+      new_x = (@x * self.class.size) % Map.width
+      new_y = (@y * self.class.size) % Map.height
 
       target_location = CGPointMake(new_x, new_y)
 

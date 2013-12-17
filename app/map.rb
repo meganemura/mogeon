@@ -39,13 +39,13 @@ module Mogeon
       def moving_amount(direction)
         case direction
         when :right
-          [Tile.size,  0]
+          [1,  0]
         when :left
-          [-Tile.size, 0]
+          [-1, 0]
         when :up
-          [0,  Tile.size]
+          [0,  1]
         when :down
-          [0, -Tile.size]
+          [0, -1]
         end
       end
     end
