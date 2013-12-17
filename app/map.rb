@@ -3,6 +3,7 @@ module Mogeon
   class Map
     class << self
 
+      attr_reader :columns, :rows
       def size=(size)
         @columns  = (size.width  / Tile.size).to_i
         @rows     = (size.height / Tile.size).to_i

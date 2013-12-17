@@ -52,10 +52,10 @@ module Mogeon
 
     # (x, y) の差分を自分の position に追加する
     def move(x, y, callback = nil)
-      @x += x
-      @y += y
-      new_x = (@x * self.class.size) % Map.width
-      new_y = (@y * self.class.size) % Map.height
+      @x = (@x + x) % Map.columns
+      @y = (@y + y) % Map.rows
+      new_x = @x * self.class.size
+      new_y = @y * self.class.size
 
       target_location = CGPointMake(new_x, new_y)
 
@@ -63,6 +63,8 @@ module Mogeon
       move_action = SKAction.moveTo(target_location, duration: move_duration)
       move_action_with_done = SKAction.sequence([move_action, callback].compact)
       self.runAction(move_action_with_done, withKey: "tile_moving")
+
+      return [@x, @y]
     end
   end
 end
