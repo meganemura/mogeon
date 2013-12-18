@@ -56,7 +56,7 @@ module Mogeon
       # setup enemies
       @enemies = DEFAULT_ENEMY_SIZE.times.map { Enemy.new(0, 0) }
       @enemies.each_with_index do |enemy, i|
-        enemy.locate(i, 7)
+        enemy.locate(i, 1)
         Map.movers << enemy
         self.addChild(enemy)
       end
@@ -122,12 +122,16 @@ module Mogeon
 
         if defeated = Map.movers.find {|mover| mover.object_id != @current_object.object_id && mover.x == after_x && mover.y == after_y }
           # TODO: 演出の追加
+
+          # TODO: 明らかに管理方法がおかしい
           self.removeChild(defeated)
           Map.movers.delete(defeated)
+          @friends.delete(defeated)
+          @enemies.delete(defeated)
 
           # FIXME: 本来消すべきではない
           #        (queue に入っている == 同族) のため
-          @queue.delete(defeated) #
+          @queue.delete(defeated)
         end
       elsif @queue.empty?
         @state.next
