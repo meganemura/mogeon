@@ -71,10 +71,10 @@ module Mogeon
         config.fontSize = 15
         config.fontColor = SKColor.greenColor
         config.text = "State: #{@state.current}"
-        config.position = CGPointMake(
+        config.position = [
           20 + config.frame.size.width / 2,
           self.size.height - (20 + config.frame.size.height)
-        )
+        ].to_point
       end
       self.addChild(score_label)
     end

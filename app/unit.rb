@@ -19,7 +19,7 @@ module Mogeon
         instance = self.spriteNodeWithTexture(partial_texture).tap do |config|
           config.x = x
           config.y = y
-          config.anchorPoint = CGPointMake(0, 0)
+          config.anchorPoint = [0, 0].to_point
           config.scale = self::SCALE
           config.zPosition = self::Z_POSITION
         end
@@ -46,7 +46,7 @@ module Mogeon
     def locate(x, y)
       @x = x
       @y = y
-      position = CGPointMake(@x * self.class.size, @y * self.class.size)
+      position = [@x, @y].to_point * self.class.size
       self.setPosition(position)
     end
 
@@ -57,7 +57,7 @@ module Mogeon
       new_x = @x * self.class.size
       new_y = @y * self.class.size
 
-      target_location = CGPointMake(new_x, new_y)
+      target_location = [new_x, new_y].to_point
 
       move_duration = 0.5
       move_action = SKAction.moveTo(target_location, duration: move_duration)

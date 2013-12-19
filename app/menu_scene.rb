@@ -11,7 +11,7 @@ module Mogeon
       label.text = "Mogeon"
       label.fontSize = 40
       label.fontColor = SKColor.whiteColor
-      label.position = CGPointMake(self.size.width / 2, self.size.height / 2)
+      label.position = [self.size.width, self.size.height].to_point / 2
       self.addChild(label)
     end
 
