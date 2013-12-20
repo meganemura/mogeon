@@ -16,20 +16,10 @@ class CGPoint
     CGPointMake(-x, -y)
   end
 
-  def +(operand)
-    operation(:+, operand)
-  end
-
-  def -(operand)
-    operation(:-, operand)
-  end
-
-  def *(operand)
-    operation(:*, operand)
-  end
-
-  def /(operand)
-    operation(:/, operand)
+  [:+, :-, :*, :/].each do |operator|
+    define_method operator do |operand|
+      operation(operator, operand)
+    end
   end
 
 
