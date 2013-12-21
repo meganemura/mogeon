@@ -117,10 +117,10 @@ module Mogeon
         x, y = Map.moving_amount(:up)
 
         # TODO: AI によって行動を決めるようにしたい
-        done_action = SKAction.runBlock(lambda {@current_object = nil})
+        done_action = SKAction.runBlock(lambda { @current_object = nil })
         after_x, after_y = @current_object.move(x, y, done_action)
 
-        if defeated = Map.movers.find {|mover| mover.object_id != @current_object.object_id && mover.x == after_x && mover.y == after_y }
+        if defeated = Map.movers.find { |mover| mover.object_id != @current_object.object_id && mover.x == after_x && mover.y == after_y }
           # TODO: 演出の追加
 
           # TODO: 明らかに管理方法がおかしい
