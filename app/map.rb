@@ -17,8 +17,9 @@ module Mogeon
         @rows * Tile.size
       end
 
+      attr_accessor :friends, :enemies
       def movers
-        @movers ||= []
+        @friends + @enemies
       end
 
       def tiles

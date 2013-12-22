@@ -46,18 +46,16 @@ module Mogeon
     DEFAULT_ENEMY_SIZE  = 2
     def setup_character
       # setup friends
-      @friends = DEFAULT_FRIEND_SIZE.times.map { Friend.new(0, 0) }
-      @friends.each_with_index do |friend, i|
+      Map.friends = DEFAULT_FRIEND_SIZE.times.map { Friend.new(0, 0) }
+      Map.friends.each_with_index do |friend, i|
         friend.locate(i, 0)
-        Map.movers << friend
         self.addChild(friend)
       end
 
       # setup enemies
-      @enemies = DEFAULT_ENEMY_SIZE.times.map { Enemy.new(0, 0) }
-      @enemies.each_with_index do |enemy, i|
+      Map.enemies = DEFAULT_ENEMY_SIZE.times.map { Enemy.new(0, 0) }
+      Map.enemies.each_with_index do |enemy, i|
         enemy.locate(i, 1)
-        Map.movers << enemy
         self.addChild(enemy)
       end
 
@@ -104,9 +102,9 @@ module Mogeon
     def queue_movers
       case @state.current
       when State::Friend
-        @queue += @friends.shuffle
+        @queue += Map.friends.shuffle
       when State::Enemy
-        @queue += @enemies.shuffle
+        @queue += Map.enemies.shuffle
       end
     end
 
@@ -126,9 +124,8 @@ module Mogeon
           # TODO: 明らかに管理方法がおかしい
           #       Map.<<, Map.delete で全てできるようにする?
           self.removeChild(defeated)
-          Map.movers.delete(defeated)
-          @friends.delete(defeated)
-          @enemies.delete(defeated)
+          Map.friends.delete(defeated)
+          Map.enemies.delete(defeated)
 
           # FIXME: 本来消すべきではない
           #        (queue に入っている == 同族) のため
@@ -196,7 +193,7 @@ module Mogeon
 
       touched_at = touched_node.position
 
-      nodes = [Map.tiles, @friends, @enemies].flatten
+      nodes = [Map.tiles, Map.friends, Map.enemies].flatten
 
       nodes.select do |tile|
         condition.call(tile.position, touched_at)
