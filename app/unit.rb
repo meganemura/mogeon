@@ -66,5 +66,13 @@ module Mogeon
 
       return [@x, @y]
     end
+
+
+    # マップ上の周りのユニットからどの方向に動くのかを決める
+    #   処理内で Map.moving_amount 利用する?
+    def think_moving
+      # NOTE: 各継承先で実装が必要
+      [0, 0]
+    end
   end
 end

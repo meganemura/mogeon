@@ -114,7 +114,7 @@ module Mogeon
       return if processing?
 
       if @current_object = @queue.shift
-        x, y = Map.moving_amount(:up)
+        x, y = @current_object.think_moving
 
         # TODO: AI によって行動を決めるようにしたい
         done_action = SKAction.runBlock(lambda { @current_object = nil })
@@ -124,6 +124,7 @@ module Mogeon
           # TODO: 演出の追加
 
           # TODO: 明らかに管理方法がおかしい
+          #       Map.<<, Map.delete で全てできるようにする?
           self.removeChild(defeated)
           Map.movers.delete(defeated)
           @friends.delete(defeated)
@@ -131,6 +132,7 @@ module Mogeon
 
           # FIXME: 本来消すべきではない
           #        (queue に入っている == 同族) のため
+          #        think_moving で同じ種類の場所に移動しないようにするべき
           @queue.delete(defeated)
         end
       elsif @queue.empty?
@@ -173,6 +175,8 @@ module Mogeon
       x, y = Map.moving_amount(direction)
       target_nodes(touched_node, with: direction).each do |node|
         # TODO: nodes の数だけ実行されるのを1回に変更したい
+        #       タッチ位置のユニットに対して行動する
+        #       複数あった場合は?
         done_action = SKAction.runBlock(lambda {
           @state.set(State::Friend)
         })

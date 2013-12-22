@@ -5,5 +5,9 @@ module Mogeon
     SCALE = 1.0
     TEXTURE = "leatherarmor"
 
+    def think_moving
+      [0, 1]
+    end
+
   end
 end
