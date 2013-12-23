@@ -74,5 +74,22 @@ module Mogeon
       # NOTE: 各継承先で実装が必要
       [0, 0]
     end
+
+    # 自分の視野 think_moving の実装に利用
+    #   標準は現在地の周囲8マス
+    def around
+      [
+        [x - 1, y - 1],
+        [x + 0, y - 1],
+        [x + 1, y - 1],
+
+        [x - 1, y + 0],
+        [x + 1, y + 0],
+
+        [x - 1, y + 1],
+        [x + 0, y + 1],
+        [x + 1, y + 1],
+      ]
+    end
   end
 end
