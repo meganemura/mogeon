@@ -6,7 +6,7 @@ module Mogeon
     TEXTURE = "leatherarmor"
 
     def think_moving
-      attack_target = around.find do |point|
+      attack_target = sight.find do |point|
         Map.movers.find { |mover| mover.x == point.first && mover.y == point.last }
       end
 

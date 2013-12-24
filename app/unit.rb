@@ -77,7 +77,7 @@ module Mogeon
 
     # 自分の視野 think_moving の実装に利用
     #   標準は現在地の周囲8マス
-    def around
+    def sight
       [
         [x - 1, y - 1],
         [x + 0, y - 1],
