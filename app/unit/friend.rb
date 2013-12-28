@@ -1,21 +1,15 @@
 module Mogeon
   class Friend < Unit
+    include Thinkable
 
     REAL_SIZE = 64
     SCALE = 1.0
     TEXTURE = "leatherarmor"
 
-    def think_moving
-      attack_target = sight.find do |point|
-        Map.movers.find { |mover| mover.class != self.class && mover.x == point.first && mover.y == point.last }
-      end
-
-      if attack_target
-        [attack_target.first - x, attack_target.last - y]
-      else
-        Map.moving_amount(:up)
-      end
+    def default_move
+      Map.moving_amount(:up)
     end
 
+    think_moving :attack_to_near_around
   end
 end
