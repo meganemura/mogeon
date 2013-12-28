@@ -13,14 +13,6 @@ module Mogeon
     Environment = 'Environment'.freeze
 
     def initialize
-      @states = {
-        System      => 0,
-        Player      => 0,
-        Friend      => 0,
-        Enemy       => 0,
-        Neutral     => 0,
-        Environment => 0,
-      }
       @state = Player
     end
 
