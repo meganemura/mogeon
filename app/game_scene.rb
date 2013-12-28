@@ -93,6 +93,9 @@ module Mogeon
       end
 
       case @state.current
+      when State::System
+        # system action
+        @state.next
       when State::Player
         # noop?
       else
