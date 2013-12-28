@@ -7,7 +7,7 @@ module Mogeon
 
     def think_moving
       attack_target = sight.find do |point|
-        Map.movers.find { |mover| mover.x == point.first && mover.y == point.last }
+        Map.movers.find { |mover| mover.class != self.class && mover.x == point.first && mover.y == point.last }
       end
 
       if attack_target
