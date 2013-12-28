@@ -1,6 +1,6 @@
 module Mogeon
-  class Friend < Unit
-    include Thinkable
+  class Friend < Unit::Base
+    include Unit::Thinkable
 
     REAL_SIZE = 64
     SCALE = 1.0

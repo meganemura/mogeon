@@ -1,5 +1,5 @@
 module Mogeon
-  class Tile < Unit
+  class Tile < Unit::Base
 
     REAL_SIZE = 32
     SCALE = 2.0

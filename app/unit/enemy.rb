@@ -1,6 +1,6 @@
 module Mogeon
-  class Enemy < Unit
-    include Thinkable
+  class Enemy < Unit::Base
+    include Unit::Thinkable
 
     REAL_SIZE = 32
     SCALE = 2.0
