@@ -54,8 +54,9 @@ module Mogeon
 
       # setup enemies
       Map.enemies = DEFAULT_ENEMY_SIZE.times.map { Enemy.new(0, 0) }
-      Map.enemies.each_with_index do |enemy, i|
-        enemy.locate(i, 1)
+      Map.enemies.each_with_index do |enemy|
+        x, y = Map.space(nil, Map.rows - 1)
+        enemy.locate(x, y)
         self.addChild(enemy)
       end
 

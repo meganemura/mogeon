@@ -22,6 +22,30 @@ module Mogeon
         @friends + @enemies
       end
 
+      # 誰もいない場所(スペース)を返す
+      # TODO: 効率の良いアルゴリズムにする
+      def space(x = nil, y = nil)
+        if x && y
+          unless Map.movers.find {|o| o.x == x && o.y == y }
+            return [x, y]
+          end
+        elsif x && !y
+          (0...rows).to_a.shuffle.each do |new_y|
+            unless Map.movers.find {|o| o.x == x && o.y == new_y}
+              return [x, new_y]
+            end
+          end
+        elsif !x && y
+          (0...columns).to_a.shuffle.each do |new_x|
+            unless Map.movers.find {|o| o.x == new_x && o.y == y }
+              return [new_x, y]
+            end
+          end
+        end
+
+        nil
+      end
+
       def tiles
         @tiles ||= lay_tiles
       end
