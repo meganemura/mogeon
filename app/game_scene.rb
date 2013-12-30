@@ -33,7 +33,7 @@ module Mogeon
       @queue = []
       @state = State.new
       setup_map
-      setup_character
+      setup_units
       setup_hud
     end
 
@@ -44,19 +44,24 @@ module Mogeon
 
     DEFAULT_FRIEND_SIZE = 2
     DEFAULT_ENEMY_SIZE  = 2
-    def setup_character
+    def setup_units
       # setup friends
-      Map.friends = DEFAULT_FRIEND_SIZE.times.map { Friend.new(0, 0) }
-      Map.friends.each_with_index do |friend, i|
-        friend.locate(i, 0)
+      DEFAULT_FRIEND_SIZE.times do
+        friend = Friend.new(0, 0)
+        x, y = Map.space(nil, 0)
+        friend.locate(x, y)
+
+        Map.friends << friend
         self.addChild(friend)
       end
 
       # setup enemies
-      Map.enemies = DEFAULT_ENEMY_SIZE.times.map { Enemy.new(0, 0) }
-      Map.enemies.each_with_index do |enemy|
+      DEFAULT_ENEMY_SIZE.times do
+        enemy = Enemy.new(0, 0)
         x, y = Map.space(nil, Map.rows - 1)
         enemy.locate(x, y)
+
+        Map.enemies << enemy
         self.addChild(enemy)
       end
 
