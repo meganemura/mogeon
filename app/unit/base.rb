@@ -60,7 +60,7 @@ module Mogeon
 
         target_location = [new_x, new_y].to_point
 
-        move_duration = 0.5
+        move_duration = 0.2
         move_action = SKAction.moveTo(target_location, duration: move_duration)
         move_action_with_done = SKAction.sequence([move_action, callback].compact)
         self.runAction(move_action_with_done, withKey: "tile_moving")
