@@ -17,9 +17,16 @@ module Mogeon
         @rows * Tile.size
       end
 
-      attr_accessor :friends, :enemies
+      def friends
+        @friends ||= []
+      end
+
+      def enemies
+        @enemies ||= []
+      end
+
       def movers
-        @friends + @enemies
+        friends + enemies
       end
 
       # 誰もいない場所(スペース)を返す
