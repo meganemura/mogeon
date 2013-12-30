@@ -21,7 +21,15 @@ module Mogeon
         if attack_target
           [attack_target.first - x, attack_target.last - y]
         else
-          default_move
+          # 移動可能な場所を探す
+          movable_points = default_moves
+          Map.movers.each do |mover|
+            movable_points.delete([mover.x, mover.y])
+          end
+          point = movable_points.first
+          puts point.inspect
+
+          [point.first - x, point.last - y]
         end
       end
     end

@@ -76,6 +76,10 @@ module Mogeon
         [0, 0]
       end
 
+      def default_moves
+        [0, 0]
+      end
+
       # 自分の視野 think_moving の実装に利用
       #   標準は現在地の周囲8マス
       def sight
