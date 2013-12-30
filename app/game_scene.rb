@@ -1,8 +1,8 @@
 module Mogeon
   class GameScene < SKScene
+
     def initWithSize(size)
       super
-
       self
     end
 
@@ -110,6 +110,8 @@ module Mogeon
 
     def queue_movers
       case @state.current
+      when State::System
+        setup_units
       when State::Friend
         @queue += Map.friends.shuffle
       when State::Enemy
