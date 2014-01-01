@@ -15,6 +15,9 @@ module Mogeon
     end
 
     def setup_gesture_recognizer
+      tap_recognizer = UILongPressGestureRecognizer.alloc.initWithTarget(self, action: :'long_press:')
+      self.view.addGestureRecognizer(tap_recognizer)
+
       [
         UISwipeGestureRecognizerDirectionRight,
         UISwipeGestureRecognizerDirectionLeft,
@@ -156,11 +159,48 @@ module Mogeon
       [State::Player].include?(@state.current)
     end
 
+
+    # UILongPressGestureRecognizer
+    def long_press(recognizer)
+      return unless user_controllable?
+
+      touch_location  = recognizer.locationInView(recognizer.view)
+      touch_location  = self.convertPointFromView(touch_location)
+      touched_node    = self.nodeAtPoint(touch_location)
+
+      case recognizer.state
+      when UIGestureRecognizerStateBegan
+        logging "UILongPress: UIGestureRecognizerStateBegan"
+        sequence = SKAction.sequence([
+          SKAction.rotateByAngle(degrees_to_radians(-4.0), duration: 0.1),
+          SKAction.rotateByAngle(0.0, duration: 0.1),
+          SKAction.rotateByAngle(degrees_to_radians(4.0), duration: 0.1),
+        ])
+        touched_node.runAction(SKAction.repeatActionForever(sequence))
+      when UIGestureRecognizerStateChanged
+        logging "UILongPress: UIGestureRecognizerStateChanged"
+        stop_motion(touched_node)
+      when UIGestureRecognizerStateEnded
+        logging "UILongPress: UIGestureRecognizerStateEnded"
+        stop_motion(touched_node)
+      end
+    end
+
+    def stop_motion(node)
+      node.removeAllActions
+      sequence = SKAction.sequence([
+        SKAction.rotateToAngle(degrees_to_radians(0), duration: 0.1),
+      ])
+      node.runAction(SKAction.repeatActionForever(sequence))
+    end
+
     # UISwipeGestureRecognizer
     def swipe(recognizer)
       return unless user_controllable?
+
       case recognizer.state
       when UIGestureRecognizerStateRecognized
+        logging "UISwipe: UIGestureRecognizerStateRecognized"
         touch_location = recognizer.locationInView(recognizer.view)
         touch_location = self.convertPointFromView(touch_location)
         direction = DIRECTION_MAP[recognizer.direction]
@@ -211,5 +251,8 @@ module Mogeon
       end
     end
 
+    def logging(message)
+      puts message.inspect
+    end
   end
 end
