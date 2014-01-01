@@ -116,9 +116,9 @@ module Mogeon
       when State::System
         setup_units
       when State::Friend
-        @queue += Map.friends.sort {|a, b| b.y <=> a.y }
+        @queue += Map.friends.sort {|a, b| b.y <=> a.y }  # y の降順
       when State::Enemy
-        @queue += Map.enemies.sort {|a, b| a.y <=> b.y }
+        @queue += Map.enemies.sort {|a, b| a.y <=> b.y }  # y の昇順
       end
     end
 
@@ -133,13 +133,18 @@ module Mogeon
         after_x, after_y = @current_object.move(x, y, done_action)
 
         if defeated = Map.movers.find { |mover| mover.object_id != @current_object.object_id && mover.x == after_x && mover.y == after_y }
-          # TODO: 演出の追加
-
-          # TODO: 明らかに管理方法がおかしい
-          #       Map.<<, Map.delete で全てできるようにする?
-          self.removeChild(defeated)
-          Map.friends.delete(defeated)
-          Map.enemies.delete(defeated)
+          done_action = SKAction.runBlock(lambda {
+            # TODO: 明らかに管理方法がおかしい
+            #       Map.<<, Map.delete で全てできるようにする?
+            self.removeChild(defeated)
+            Map.friends.delete(defeated)
+            Map.enemies.delete(defeated)
+          })
+          sequence = SKAction.sequence([
+            SKAction.scaleXBy(0.1, y: 0.1, duration: 0.5),
+            done_action,
+          ])
+          defeated.runAction(sequence)
 
           # FIXME: 本来消すべきではない
           #        (queue に入っている == 同族) のため
