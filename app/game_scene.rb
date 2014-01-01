@@ -113,9 +113,9 @@ module Mogeon
       when State::System
         setup_units
       when State::Friend
-        @queue += Map.friends.shuffle
+        @queue += Map.friends.sort {|a, b| b.y <=> a.y }
       when State::Enemy
-        @queue += Map.enemies.shuffle
+        @queue += Map.enemies.sort {|a, b| a.y <=> b.y }
       end
     end
 
