@@ -129,7 +129,8 @@ module Mogeon
         x, y = @current_object.think_moving
 
         # TODO: AI によって行動を決めるようにしたい
-        after_x, after_y = @current_object.move(x, y) do
+        after_x, after_y = @current_object.move_by(x, y) do
+          # TODO: defeated が存在する場合には defeated 側に @current_object = nil をセットする
           SKAction.runBlock(lambda { @current_object = nil })
         end
 
@@ -243,7 +244,7 @@ module Mogeon
         #       タッチ位置のユニットに対して行動する
         #       複数あった場合は?
 
-        node.move(x, y) do
+        node.move_by(x, y) do
           [
             SKAction.playSoundFileNamed("chat.mp3", waitForCompletion: false),
             SKAction.runBlock(lambda {

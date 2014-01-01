@@ -51,19 +51,18 @@ module Mogeon
         self.setPosition(position)
       end
 
+      # absolute
+      def move_to(x, y, &block)
+      end
+
+      # relative
       # (x, y) の差分を自分の position に追加する
-      def move(x, y, &block)
-        @x = (@x + x) % Map.columns
-        @y = (@y + y) % Map.rows
-        new_x = @x * self.class.size
-        new_y = @y * self.class.size
+      def move_by(dx, dy, &block)
+        target_location = moved_point(dx, dy)
 
-        target_location = [new_x, new_y].to_point
+        move_action = SKAction.moveTo(target_location, duration: 0.2)
 
-        # self.runAction(move_action_with_done)
         action do
-          move_action = SKAction.moveTo(target_location, duration: 0.2)
-
           if block
             [move_action, block.call].flatten
           else
@@ -71,7 +70,17 @@ module Mogeon
           end
         end
 
+        # TODO: 削除したい
         return [@x, @y]
+      end
+
+      def moved_point(dx, dy)
+        @x = (@x + dx) % Map.columns
+        @y = (@y + dy) % Map.rows
+        new_x = @x * self.class.size  # TODO: Map.x_at(x) で座標に変換したい
+        new_y = @y * self.class.size
+
+        [new_x, new_y].to_point
       end
 
 
