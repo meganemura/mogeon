@@ -140,7 +140,9 @@ module Mogeon
             Map.friends.delete(defeated)
             Map.enemies.delete(defeated)
           })
+
           sequence = SKAction.sequence([
+            SKAction.playSoundFileNamed("kill1.mp3", waitForCompletion: false),
             SKAction.scaleXBy(0.1, y: 0.1, duration: 0.5),
             done_action,
           ])
