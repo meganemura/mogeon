@@ -241,6 +241,10 @@ module Mogeon
         # TODO: nodes の数だけ実行されるのを1回に変更したい
         #       タッチ位置のユニットに対して行動する
         #       複数あった場合は?
+
+        node.action do
+          SKAction.playSoundFileNamed("chat.mp3", waitForCompletion: false)
+        end
         done_action = SKAction.runBlock(lambda {
           @state.set(State::Friend)
         })

@@ -106,6 +106,19 @@ module Mogeon
       def nodes_of_sight
         Map.tiles.select {|tile| self.sight.include?([tile.x, tile.y]) }
       end
+
+      def action(&block)
+        if block
+          action = block.call
+          case action
+          when Array
+            self.runAction(SKAction.sequence(actions))
+          else
+            self.runAction(action)
+          end
+        end
+      end
+
     end
   end
 end
