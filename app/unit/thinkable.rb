@@ -27,7 +27,6 @@ module Mogeon
             movable_points.delete([mover.x, mover.y])
           end
           point = movable_points.first
-          puts point.inspect
 
           [point.first - x, point.last - y]
         end
