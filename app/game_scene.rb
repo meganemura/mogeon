@@ -171,18 +171,27 @@ module Mogeon
       case recognizer.state
       when UIGestureRecognizerStateBegan
         logging "UILongPress: UIGestureRecognizerStateBegan"
+
         sequence = SKAction.sequence([
           SKAction.rotateByAngle(degrees_to_radians(-4.0), duration: 0.1),
           SKAction.rotateByAngle(0.0, duration: 0.1),
           SKAction.rotateByAngle(degrees_to_radians(4.0), duration: 0.1),
         ])
-        touched_node.runAction(SKAction.repeatActionForever(sequence))
+        touched_node.with_nodes_of_sight.each do |node|
+          node.runAction(SKAction.repeatActionForever(sequence))
+        end
       when UIGestureRecognizerStateChanged
         logging "UILongPress: UIGestureRecognizerStateChanged"
-        stop_motion(touched_node)
+
+        touched_node.with_nodes_of_sight.each do |node|
+          stop_motion(node)
+        end
       when UIGestureRecognizerStateEnded
         logging "UILongPress: UIGestureRecognizerStateEnded"
-        stop_motion(touched_node)
+
+        touched_node.with_nodes_of_sight.each do |node|
+          stop_motion(node)
+        end
       end
     end
 

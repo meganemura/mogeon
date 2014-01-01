@@ -97,6 +97,15 @@ module Mogeon
           [x + 1, y + 1],
         ]
       end
+
+      def with_nodes_of_sight
+        [self] + nodes_of_sight
+      end
+
+      # sight にある tile を返す
+      def nodes_of_sight
+        Map.tiles.select {|tile| self.sight.include?([tile.x, tile.y]) }
+      end
     end
   end
 end
