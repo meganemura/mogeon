@@ -129,24 +129,25 @@ module Mogeon
         x, y = @current_object.think_moving
 
         # TODO: AI によって行動を決めるようにしたい
-        done_action = SKAction.runBlock(lambda { @current_object = nil })
-        after_x, after_y = @current_object.move(x, y, done_action)
+        after_x, after_y = @current_object.move(x, y) do
+          SKAction.runBlock(lambda { @current_object = nil })
+        end
 
         if defeated = Map.movers.find { |mover| mover.object_id != @current_object.object_id && mover.x == after_x && mover.y == after_y }
-          done_action = SKAction.runBlock(lambda {
-            # TODO: 明らかに管理方法がおかしい
-            #       Map.<<, Map.delete で全てできるようにする?
-            self.removeChild(defeated)
-            Map.friends.delete(defeated)
-            Map.enemies.delete(defeated)
-          })
 
-          sequence = SKAction.sequence([
-            SKAction.playSoundFileNamed("kill1.mp3", waitForCompletion: false),
-            SKAction.scaleXBy(0.1, y: 0.1, duration: 0.5),
-            done_action,
-          ])
-          defeated.runAction(sequence)
+          defeated.action do
+            [
+              SKAction.playSoundFileNamed("kill1.mp3", waitForCompletion: false),
+              SKAction.scaleXBy(0.1, y: 0.1, duration: 0.5),
+              SKAction.runBlock(lambda {
+                # TODO: 明らかに管理方法がおかしい
+                #       Map.<<, Map.delete で全てできるようにする?
+                self.removeChild(defeated)
+                Map.friends.delete(defeated)
+                Map.enemies.delete(defeated)
+              }),
+            ]
+          end
 
           # FIXME: 本来消すべきではない
           #        (queue に入っている == 同族) のため
@@ -242,13 +243,14 @@ module Mogeon
         #       タッチ位置のユニットに対して行動する
         #       複数あった場合は?
 
-        node.action do
-          SKAction.playSoundFileNamed("chat.mp3", waitForCompletion: false)
+        node.move(x, y) do
+          [
+            SKAction.playSoundFileNamed("chat.mp3", waitForCompletion: false),
+            SKAction.runBlock(lambda {
+              @state.set(State::Friend)
+            }),
+          ]
         end
-        done_action = SKAction.runBlock(lambda {
-          @state.set(State::Friend)
-        })
-        node.move(x, y, done_action)
       end
     end
 

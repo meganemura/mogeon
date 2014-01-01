@@ -52,7 +52,7 @@ module Mogeon
       end
 
       # (x, y) の差分を自分の position に追加する
-      def move(x, y, callback = nil)
+      def move(x, y, &block)
         @x = (@x + x) % Map.columns
         @y = (@y + y) % Map.rows
         new_x = @x * self.class.size
@@ -60,10 +60,16 @@ module Mogeon
 
         target_location = [new_x, new_y].to_point
 
-        move_duration = 0.2
-        move_action = SKAction.moveTo(target_location, duration: move_duration)
-        move_action_with_done = SKAction.sequence([move_action, callback].compact)
-        self.runAction(move_action_with_done, withKey: "tile_moving")
+        # self.runAction(move_action_with_done)
+        action do
+          move_action = SKAction.moveTo(target_location, duration: 0.2)
+
+          if block
+            [move_action, block.call].flatten
+          else
+            move_action
+          end
+        end
 
         return [@x, @y]
       end
@@ -98,6 +104,7 @@ module Mogeon
         ]
       end
 
+
       def with_nodes_of_sight
         [self] + nodes_of_sight
       end
@@ -112,7 +119,7 @@ module Mogeon
           action = block.call
           case action
           when Array
-            self.runAction(SKAction.sequence(actions))
+            self.runAction(SKAction.sequence(action))
           else
             self.runAction(action)
           end
