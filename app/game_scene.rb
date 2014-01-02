@@ -135,6 +135,12 @@ module Mogeon
         end
 
         if defeated = Map.movers.find { |mover| mover.object_id != @current_object.object_id && mover.x == after_x && mover.y == after_y }
+          Map.friends.delete(defeated)
+          Map.enemies.delete(defeated)
+          # FIXME: 本来消すべきではない
+          #        (queue に入っている == 同族) のため
+          #        think_moving で同じ種類の場所に移動しないようにするべき
+          @queue.delete(defeated)
 
           defeated.action do
             [
@@ -144,16 +150,9 @@ module Mogeon
                 # TODO: 明らかに管理方法がおかしい
                 #       Map.<<, Map.delete で全てできるようにする?
                 self.removeChild(defeated)
-                Map.friends.delete(defeated)
-                Map.enemies.delete(defeated)
               }),
             ]
           end
-
-          # FIXME: 本来消すべきではない
-          #        (queue に入っている == 同族) のため
-          #        think_moving で同じ種類の場所に移動しないようにするべき
-          @queue.delete(defeated)
         end
       elsif @queue.empty?
         @state.next
