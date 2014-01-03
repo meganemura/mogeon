@@ -131,6 +131,11 @@ module Mogeon
         # TODO: AI によって行動を決めるようにしたい
         moved_x, moved_y = @current_object.moved_point(dx, dy)
 
+        # TODO:
+        #   unit.actions << SKAction.moveTo
+        #   unit.run_actions
+        #   とするのがよさそう
+        @current_object.effect(:current)
         @current_object.move_to(moved_x, moved_y) do
           # TODO: defeated が存在する場合には defeated 側に @current_object = nil をセットする
           SKAction.runBlock(lambda { @current_object = nil })
