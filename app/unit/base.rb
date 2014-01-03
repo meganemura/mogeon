@@ -53,13 +53,8 @@ module Mogeon
 
       # absolute
       def move_to(x, y, &block)
-      end
-
-      # relative
-      # (x, y) の差分を自分の position に追加する
-      def move_by(dx, dy, &block)
-        moved_at = moved_point(dx, dy)
-        @x, @y = moved_at
+        @x = x
+        @y = y
         target_location = [@x * self.class.size, @y * self.class.size].to_point
 
         move_action = SKAction.moveTo(target_location, duration: 0.2)
@@ -74,6 +69,13 @@ module Mogeon
 
         # TODO: 削除したい
         return [@x, @y]
+      end
+
+      # relative
+      # (x, y) の差分を自分の position に追加する
+      def move_by(dx, dy, &block)
+        x, y = moved_point(dx, dy)
+        return move_to(x, y, &block)
       end
 
       def moved_point(dx, dy)
