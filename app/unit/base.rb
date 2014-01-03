@@ -67,15 +67,14 @@ module Mogeon
           end
         end
 
-        # TODO: 削除したい
-        return [@x, @y]
+        nil
       end
 
       # relative
       # (x, y) の差分を自分の position に追加する
       def move_by(dx, dy, &block)
         x, y = moved_point(dx, dy)
-        return move_to(x, y, &block)
+        move_to(x, y, &block)
       end
 
       def moved_point(dx, dy)
