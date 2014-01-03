@@ -71,24 +71,19 @@ module Mogeon
       # setup neutrals
     end
 
-    STATE_HUD_NAME = 'state_hud'.freeze
     def setup_hud
-      score_label = SKLabelNode.labelNodeWithFontNamed("Courier").tap do |config|
-        config.name = STATE_HUD_NAME
-        config.fontSize = 15
-        config.fontColor = SKColor.greenColor
-        config.text = "State: #{@state.current}"
-        config.position = [
-          20 + config.frame.size.width / 2,
-          self.size.height - (20 + config.frame.size.height)
-        ].to_point
-      end
-      self.addChild(score_label)
+      # State HUD
+      state_hud = StateHud.new("State: #{@state.current}")
+      state_hud.position = [
+        20 + state_hud.frame.size.width / 2,
+        self.size.height - (20 + state_hud.frame.size.height)
+      ].to_point
+      self.addChild(state_hud)
     end
 
     def update_hud
-      state_hud = self.childNodeWithName(STATE_HUD_NAME)
-      state_hud.text = "State: #{@state.current}"
+      state_hud = self.childNodeWithName(StateHud::NAME)
+      state_hud.update("State: #{@state.current}")
     end
 
     # Called before each frame is rendered
