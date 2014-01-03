@@ -134,7 +134,11 @@ module Mogeon
           SKAction.runBlock(lambda { @current_object = nil })
         end
 
-        if defeated = Map.movers.find { |mover| mover.object_id != @current_object.object_id && mover.x == after_x && mover.y == after_y }
+        defeated = Map.movers.find do |mover|
+          mover.object_id != @current_object.object_id && mover.x == after_x && mover.y == after_y
+        end
+
+        if defeated
           Map.friends.delete(defeated)
           Map.enemies.delete(defeated)
           # FIXME: 本来消すべきではない
