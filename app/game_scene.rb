@@ -126,10 +126,10 @@ module Mogeon
       return if processing?
 
       if @current_object = @queue.shift
-        x, y = @current_object.think_moving
+        dx, dy = @current_object.think_moving
 
         # TODO: AI によって行動を決めるようにしたい
-        after_x, after_y = @current_object.move_by(x, y) do
+        after_x, after_y = @current_object.move_by(dx, dy) do
           # TODO: defeated が存在する場合には defeated 側に @current_object = nil をセットする
           SKAction.runBlock(lambda { @current_object = nil })
         end
@@ -237,13 +237,13 @@ module Mogeon
       return unless touched_node.is_a? SKSpriteNode
 
       # スワイプの direction に合わせて nodes を移動させる
-      x, y = Map.moving_amount(direction)
+      dx, dy = Map.moving_amount(direction)
       target_nodes(touched_node, with: direction).each do |node|
         # TODO: nodes の数だけ実行されるのを1回に変更したい
         #       タッチ位置のユニットに対して行動する
         #       複数あった場合は?
 
-        node.move_by(x, y) do
+        node.move_by(dx, dy) do
           [
             SKAction.playSoundFileNamed("chat.mp3", waitForCompletion: false),
             SKAction.runBlock(lambda {
