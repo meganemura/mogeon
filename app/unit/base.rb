@@ -58,7 +58,9 @@ module Mogeon
       # relative
       # (x, y) の差分を自分の position に追加する
       def move_by(dx, dy, &block)
-        target_location = moved_point(dx, dy)
+        moved_at = moved_point(dx, dy)
+        @x, @y = moved_at
+        target_location = [@x * self.class.size, @y * self.class.size].to_point
 
         move_action = SKAction.moveTo(target_location, duration: 0.2)
 
@@ -75,12 +77,9 @@ module Mogeon
       end
 
       def moved_point(dx, dy)
-        @x = (@x + dx) % Map.columns
-        @y = (@y + dy) % Map.rows
-        new_x = @x * self.class.size  # TODO: Map.x_at(x) で座標に変換したい
-        new_y = @y * self.class.size
-
-        [new_x, new_y].to_point
+        map_x = (@x + dx) % Map.columns
+        map_y = (@y + dy) % Map.rows
+        [map_x, map_y]
       end
 
 
