@@ -1,5 +1,5 @@
 module Mogeon
-  class Enemy < Unit::Base
+  class Enemy < Unit::Body
     include Unit::Thinkable
 
     REAL_SIZE = 32

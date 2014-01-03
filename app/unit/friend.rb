@@ -1,5 +1,5 @@
 module Mogeon
-  class Friend < Unit::Base
+  class Friend < Unit::Body
     include Unit::Thinkable
 
     REAL_SIZE = 64
