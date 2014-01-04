@@ -36,71 +36,12 @@ module Mogeon
 
       @queue = []
       @state = State.new
-      setup_map
-      setup_units
-      setup_hud
-      setup_sound_effect
-      setup_background_music
-    end
-
-    def setup_map
-      Map.size = self.frame.size
-      Map.tiles.each { |tile| self << tile }
-    end
-
-    DEFAULT_FRIEND_SIZE = 2
-    DEFAULT_ENEMY_SIZE  = 2
-    def setup_units
-      # setup friends
-      DEFAULT_FRIEND_SIZE.times do
-        friend = Friend.new(0, 0)
-        x, y = Map.space(nil, 0)
-        friend.locate(x, y)
-
-        Map.friends << friend
-        self.addChild(friend)
-      end
-
-      # setup enemies
-      DEFAULT_ENEMY_SIZE.times do
-        enemy = Enemy.new(0, 0)
-        x, y = Map.space(nil, Map.rows - 1)
-        enemy.locate(x, y)
-
-        Map.enemies << enemy
-        self.addChild(enemy)
-      end
-
-      # setup neutrals
-    end
-
-    def setup_hud
-      # State HUD
-      state_hud = StateHud.new("State: #{@state.current}")
-      state_hud.position = [
-        20 + state_hud.frame.size.width / 2,
-        self.size.height - (20 + state_hud.frame.size.height)
-      ].to_point
-      self.addChild(state_hud)
+      @world = GameWorld.new(self)
     end
 
     def update_hud
       state_hud = self.childNodeWithName(StateHud::NAME)
-      state_hud.update("State: #{@state.current}")
-    end
-
-    # pre-loading
-    def setup_sound_effect
-      SoundEffect.move_tiles
-    end
-
-    def setup_background_music
-      error = Pointer.new(:object)
-      background_music_url = NSBundle.mainBundle.URLForResource("music/desert", withExtension: "mp3")
-      @backgroundMusicPlayer = AVAudioPlayer.alloc.initWithContentsOfURL(background_music_url, error: error)
-      @backgroundMusicPlayer.numberOfLoops = -1
-      @backgroundMusicPlayer.prepareToPlay
-      @backgroundMusicPlayer.play
+      state_hud.update(@state.current.to_s)
     end
 
     # Called before each frame is rendered
@@ -116,6 +57,7 @@ module Mogeon
         # system action
         if game_cleared? && !@in_transition
           @in_transition = true
+          @world.backgroundMusicPlayer.stop
           Map.clear!
           reveal = SKTransition.flipHorizontalWithDuration(0.5 * SPEED)
           score_scene = ScoreScene.alloc.initWithSize(self.size)
@@ -137,7 +79,7 @@ module Mogeon
     def queue_movers
       case @state.current
       when State::System
-        setup_units
+        @world.setup_units
       when State::Friend
         @queue += Map.friends.sort {|a, b| b.y <=> a.y }  # y の降順
       when State::Enemy
