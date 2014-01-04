@@ -115,6 +115,7 @@ module Mogeon
         # system action
         if game_cleared? && !@in_transition
           @in_transition = true
+          Map.clear!
           reveal = SKTransition.flipHorizontalWithDuration(0.5)
           score_scene = ScoreScene.alloc.initWithSize(self.size)
           self.view.presentScene(score_scene, transition: reveal)
