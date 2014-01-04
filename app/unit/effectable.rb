@@ -11,19 +11,28 @@ module Mogeon
 
       # エフェクトを実行する
       def effect(name)
+        actions = effect_for(name)
+        return unless actions
+
+        action do
+          actions
+        end
+      end
+
+      def effect_for(name)
         case name
         when :selected
           # 選択中のアニメーション
+          nil
         when :current
           # 現在移動を開始するユニット
-          action do
-            [
-              SKAction.scaleBy(1.5, duration: 0.05),
-              SKAction.scaleTo(self.class::SCALE, duration: 0.3),
-            ]
-          end
+          [
+            SKAction.scaleBy(1.5, duration: 0.05),
+            SKAction.scaleTo(self.class::SCALE, duration: 0.3),
+          ]
         else
           puts "'#{name}' effect not found"
+          nil
         end
       end
     end
