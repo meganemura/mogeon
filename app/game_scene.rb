@@ -155,7 +155,7 @@ module Mogeon
         moved_x, moved_y = @current_object.moved_point(dx, dy)
 
         @current_object.actions << [
-          @current_object.effect_for(:current),
+          Effect.balloon(@current_object.class::SCALE),
           @current_object.move_to(moved_x, moved_y),
           # TODO: defeated が存在する場合には defeated 側に @current_object = nil をセットする
           SKAction.runBlock(lambda { @current_object = nil }),
