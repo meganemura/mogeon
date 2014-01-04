@@ -29,6 +29,11 @@ module Mogeon
         friends + enemies
       end
 
+      def clear!
+        @friends = nil
+        @enemies = nil
+      end
+
       # 誰もいない場所(スペース)を返す
       # TODO: 効率の良いアルゴリズムにする
       def space(x = nil, y = nil)
