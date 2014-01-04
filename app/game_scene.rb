@@ -6,6 +6,7 @@ module Mogeon
       self
     end
 
+    # Called immediately after a scene is presented by a view.
     def didMoveToView(view)
       if !@contentCreated
         self.createSceneContents
