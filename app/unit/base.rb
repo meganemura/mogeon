@@ -56,29 +56,18 @@ module Mogeon
       end
 
       # absolute
-      def move_to(x, y, &block)
+      def move_to(x, y)
         @x = x
         @y = y
         target_location = [@x * self.class.size, @y * self.class.size].to_point + self.class.anchor_point_offset
-
-        move_action = SKAction.moveTo(target_location, duration: 0.2)
-
-        action do
-          if block
-            [move_action, block.call].flatten
-          else
-            move_action
-          end
-        end
-
-        nil
+        SKAction.moveTo(target_location, duration: 0.2)
       end
 
       # relative
       # (x, y) の差分を自分の position に追加する
-      def move_by(dx, dy, &block)
+      def move_by(dx, dy)
         x, y = moved_point(dx, dy)
-        move_to(x, y, &block)
+        move_to(x, y)
       end
 
       def moved_point(dx, dy)
@@ -97,6 +86,15 @@ module Mogeon
             self.runAction(action)
           end
         end
+      end
+
+      def actions
+        @actions ||= []
+      end
+
+      def run_actions
+        self.runAction(SKAction.sequence(@actions.flatten))
+        @actions = []
       end
 
     end

@@ -125,15 +125,13 @@ module Mogeon
         # TODO: AI によって行動を決めるようにしたい
         moved_x, moved_y = @current_object.moved_point(dx, dy)
 
-        # TODO:
-        #   unit.actions << SKAction.moveTo
-        #   unit.run_actions
-        #   とするのがよさそう
-        @current_object.effect(:current)
-        @current_object.move_to(moved_x, moved_y) do
+        @current_object.actions << [
+          @current_object.effect_for(:current),
+          @current_object.move_to(moved_x, moved_y),
           # TODO: defeated が存在する場合には defeated 側に @current_object = nil をセットする
-          SKAction.runBlock(lambda { @current_object = nil })
-        end
+          SKAction.runBlock(lambda { @current_object = nil }),
+        ]
+        @current_object.run_actions
 
         defeated = Map.movers.find do |mover|
           mover.object_id != @current_object.object_id && mover.x == moved_x && mover.y == moved_y
@@ -147,8 +145,7 @@ module Mogeon
           #        think_moving で同じ種類の場所に移動しないようにするべき
           @queue.delete(defeated)
 
-          defeated.action do
-            [
+          defeated.actions << [
               SKAction.playSoundFileNamed("kill1.mp3", waitForCompletion: false),
               SKAction.scaleXBy(0.1, y: 0.1, duration: 0.5),
               SKAction.runBlock(lambda {
@@ -156,8 +153,8 @@ module Mogeon
                 #       Map.<<, Map.delete で全てできるようにする?
                 self.removeChild(defeated)
               }),
-            ]
-          end
+          ]
+          defeated.run_actions
         end
       elsif @queue.empty?
         @state.next
@@ -247,15 +244,12 @@ module Mogeon
         # TODO: nodes の数だけ実行されるのを1回に変更したい
         #       タッチ位置のユニットに対して行動する
         #       複数あった場合は?
-
-        node.move_by(dx, dy) do
-          [
-            SKAction.playSoundFileNamed("chat.mp3", waitForCompletion: false),
-            SKAction.runBlock(lambda {
-              @state.set(State::Friend)
-            }),
-          ]
-        end
+        node.actions << [
+          node.move_by(dx, dy),
+          SKAction.playSoundFileNamed("chat.mp3", waitForCompletion: false),
+          SKAction.runBlock(lambda { @state.set(State::Friend) }),
+        ]
+        node.run_actions
       end
     end
 
