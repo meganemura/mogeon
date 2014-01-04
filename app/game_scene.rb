@@ -184,6 +184,8 @@ module Mogeon
       touch_location  = self.convertPointFromView(touch_location)
       touched_node    = self.nodeAtPoint(touch_location)
 
+      return unless touched_node.respond_to?(:sight)
+
       case recognizer.state
       when UIGestureRecognizerStateBegan
         logging "UILongPress: UIGestureRecognizerStateBegan"
