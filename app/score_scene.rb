@@ -17,9 +17,9 @@ module Mogeon
       # Effect
       self.runAction(
         SKAction.sequence([
-          SKAction.waitForDuration(3.0),
+          SKAction.waitForDuration(3.0 * SPEED),
           SKAction.runBlock(lambda {
-            reveal = SKTransition.flipHorizontalWithDuration(0.5)
+            reveal = SKTransition.flipHorizontalWithDuration(0.5 * SPEED)
             game_scene = GameScene.alloc.initWithSize(self.size)
             self.view.presentScene(game_scene, transition: reveal)
           }),

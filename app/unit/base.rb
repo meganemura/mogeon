@@ -60,7 +60,7 @@ module Mogeon
         @x = x
         @y = y
         target_location = [@x * self.class.size, @y * self.class.size].to_point + self.class.anchor_point_offset
-        SKAction.moveTo(target_location, duration: 0.2)
+        SKAction.moveTo(target_location, duration: 0.2 * SPEED)
       end
 
       # relative

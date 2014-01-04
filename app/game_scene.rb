@@ -117,7 +117,7 @@ module Mogeon
         if game_cleared? && !@in_transition
           @in_transition = true
           Map.clear!
-          reveal = SKTransition.flipHorizontalWithDuration(0.5)
+          reveal = SKTransition.flipHorizontalWithDuration(0.5 * SPEED)
           score_scene = ScoreScene.alloc.initWithSize(self.size)
           self.view.presentScene(score_scene, transition: reveal)
         else
@@ -176,7 +176,7 @@ module Mogeon
 
           defeated.actions << [
             SoundEffect.defeat,
-            SKAction.scaleXBy(0.1, y: 0.1, duration: 0.5),
+            SKAction.scaleXBy(0.1, y: 0.1, duration: 0.5 * SPEED),
             SKAction.runBlock(lambda {
               # TODO: 明らかに管理方法がおかしい
               #       Map.<<, Map.delete で全てできるようにする?
@@ -214,9 +214,9 @@ module Mogeon
         logging "UILongPress: UIGestureRecognizerStateBegan"
 
         sequence = SKAction.sequence([
-          SKAction.rotateByAngle(degrees_to_radians(-4.0), duration: 0.1),
-          SKAction.rotateByAngle(0.0, duration: 0.1),
-          SKAction.rotateByAngle(degrees_to_radians(4.0), duration: 0.1),
+          SKAction.rotateByAngle(degrees_to_radians(-4.0), duration: 0.1 * SPEED),
+          SKAction.rotateByAngle(0.0, duration: 0.1 * SPEED),
+          SKAction.rotateByAngle(degrees_to_radians(4.0), duration: 0.1 * SPEED),
         ])
         touched_node.with_nodes_of_sight.each do |node|
           node.runAction(SKAction.repeatActionForever(sequence))
@@ -239,7 +239,7 @@ module Mogeon
     def stop_motion(node)
       node.removeAllActions
       sequence = SKAction.sequence([
-        SKAction.rotateToAngle(degrees_to_radians(0), duration: 0.1),
+        SKAction.rotateToAngle(degrees_to_radians(0), duration: 0.1 * SPEED),
       ])
       node.runAction(SKAction.repeatActionForever(sequence))
     end

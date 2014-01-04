@@ -27,8 +27,8 @@ module Mogeon
         when :current
           # 現在移動を開始するユニット
           [
-            SKAction.scaleBy(1.5, duration: 0.05),
-            SKAction.scaleTo(self.class::SCALE, duration: 0.3),
+            SKAction.scaleBy(1.5, duration: 0.05 * SPEED),
+            SKAction.scaleTo(self.class::SCALE, duration: 0.3 * SPEED),
           ]
         else
           puts "'#{name}' effect not found"

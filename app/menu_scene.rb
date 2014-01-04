@@ -22,9 +22,9 @@ module Mogeon
         friend.position = location
         friend.runAction(
           SKAction.sequence([
-            SKAction.rotateByAngle(2 * Math::PI, duration: 0.5),
+            SKAction.rotateByAngle(2 * Math::PI, duration: 0.5 * SPEED),
             SKAction.runBlock(lambda {
-              reveal = SKTransition.doorsOpenHorizontalWithDuration(1.0)
+              reveal = SKTransition.doorsOpenHorizontalWithDuration(1.0 * SPEED)
               my_scene = GameScene.alloc.initWithSize(self.size)
               my_scene.scaleMode = SKSceneScaleModeAspectFill
               self.view.presentScene(my_scene, transition: reveal)
