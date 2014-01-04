@@ -39,6 +39,7 @@ module Mogeon
       setup_units
       setup_hud
       setup_sound_effect
+      setup_background_music
     end
 
     def setup_map
@@ -90,6 +91,15 @@ module Mogeon
     # pre-loading
     def setup_sound_effect
       SoundEffect.move_tiles
+    end
+
+    def setup_background_music
+      error = Pointer.new(:object)
+      background_music_url = NSBundle.mainBundle.URLForResource("music/desert", withExtension: "mp3")
+      @backgroundMusicPlayer = AVAudioPlayer.alloc.initWithContentsOfURL(background_music_url, error: error)
+      @backgroundMusicPlayer.numberOfLoops = -1
+      @backgroundMusicPlayer.prepareToPlay
+      @backgroundMusicPlayer.play
     end
 
     # Called before each frame is rendered
