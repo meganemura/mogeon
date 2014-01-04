@@ -38,6 +38,7 @@ module Mogeon
       setup_map
       setup_units
       setup_hud
+      setup_sound_effect
     end
 
     def setup_map
@@ -84,6 +85,11 @@ module Mogeon
     def update_hud
       state_hud = self.childNodeWithName(StateHud::NAME)
       state_hud.update("State: #{@state.current}")
+    end
+
+    # pre-loading
+    def setup_sound_effect
+      SoundEffect.move_tiles
     end
 
     # Called before each frame is rendered
@@ -146,13 +152,13 @@ module Mogeon
           @queue.delete(defeated)
 
           defeated.actions << [
-              SKAction.playSoundFileNamed("kill1.mp3", waitForCompletion: false),
-              SKAction.scaleXBy(0.1, y: 0.1, duration: 0.5),
-              SKAction.runBlock(lambda {
-                # TODO: 明らかに管理方法がおかしい
-                #       Map.<<, Map.delete で全てできるようにする?
-                self.removeChild(defeated)
-              }),
+            SoundEffect.defeat,
+            SKAction.scaleXBy(0.1, y: 0.1, duration: 0.5),
+            SKAction.runBlock(lambda {
+              # TODO: 明らかに管理方法がおかしい
+              #       Map.<<, Map.delete で全てできるようにする?
+              self.removeChild(defeated)
+            }),
           ]
           defeated.run_actions
         end
@@ -246,7 +252,7 @@ module Mogeon
         #       複数あった場合は?
         node.actions << [
           node.move_by(dx, dy),
-          SKAction.playSoundFileNamed("chat.mp3", waitForCompletion: false),
+          SoundEffect.move_tiles,
           SKAction.runBlock(lambda { @state.set(State::Friend) }),
         ]
         node.run_actions
