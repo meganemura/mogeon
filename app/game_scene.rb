@@ -113,12 +113,23 @@ module Mogeon
       case @state.current
       when State::System
         # system action
-        @state.next
+        if game_cleared? && !@in_transition
+          @in_transition = true
+          reveal = SKTransition.flipHorizontalWithDuration(0.5)
+          score_scene = ScoreScene.alloc.initWithSize(self.size)
+          self.view.presentScene(score_scene, transition: reveal)
+        else
+          @state.next
+        end
       when State::Player
         # noop?
       else
         process_queue
       end
+    end
+
+    def game_cleared?
+      Map.friends.size - Map.enemies.size >= 1
     end
 
     def queue_movers
