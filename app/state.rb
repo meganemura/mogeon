@@ -13,6 +13,7 @@ module Mogeon
     Environment = 'Environment'.freeze
 
     def initialize
+      @state_changed = false
       @state = Player
     end
 
@@ -21,6 +22,7 @@ module Mogeon
     end
 
     def set(state)
+      @state_changed = true
       @state = state
     end
 
@@ -33,7 +35,17 @@ module Mogeon
                    when Environment then Player
                    else                  System
                    end
+      @state_changed = true
       @state = next_state
+    end
+
+    def changed?
+      if @state_changed
+        @state_changed = false
+        true
+      else
+        false
+      end
     end
   end
 end

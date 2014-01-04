@@ -89,8 +89,7 @@ module Mogeon
     # Called before each frame is rendered
     def update(current_time)
 
-      if @old_state != @state.current
-        @old_state = @state.current
+      if @state.changed?
         update_hud
         queue_movers
       end
