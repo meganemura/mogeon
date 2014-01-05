@@ -167,23 +167,15 @@ module Mogeon
         logging "UILongPress: UIGestureRecognizerStateChanged"
 
         touched_node.with_nodes_of_sight.each do |node|
-          stop_motion(node)
+          node.stop_motion.run_actions
         end
       when UIGestureRecognizerStateEnded
         logging "UILongPress: UIGestureRecognizerStateEnded"
 
         touched_node.with_nodes_of_sight.each do |node|
-          stop_motion(node)
+          node.stop_motion.run_actions
         end
       end
-    end
-
-    def stop_motion(node)
-      node.removeAllActions
-      sequence = SKAction.sequence([
-        SKAction.rotateToAngle(degrees_to_radians(0), duration: 0.1 * SPEED),
-      ])
-      node.runAction(SKAction.repeatActionForever(sequence))
     end
 
     # UISwipeGestureRecognizer

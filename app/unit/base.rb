@@ -97,6 +97,12 @@ module Mogeon
         @actions = []
       end
 
+      def stop_motion
+        self.removeAllActions
+        actions << SKAction.rotateToAngle(degrees_to_radians(0), duration: 0.1 * SPEED)
+        self
+      end
+
     end
   end
 end
