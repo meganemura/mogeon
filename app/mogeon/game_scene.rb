@@ -8,9 +8,8 @@ module Mogeon
 
     # Called immediately after a scene is presented by a view.
     def didMoveToView(view)
-      if !@contentCreated
-        self.createSceneContents
-        @contentCreated = true
+      one_time(:create_contents) do
+        self.create_scene_contents
       end
       setup_gesture_recognizer
     end
@@ -31,7 +30,7 @@ module Mogeon
       end
     end
 
-    def createSceneContents
+    def create_scene_contents
       self.backgroundColor = SKColor.darkGrayColor
 
       @queue = []
@@ -241,6 +240,17 @@ module Mogeon
 
     def logging(message)
       puts message.inspect
+    end
+
+    # name をキーとして一回だけ実行する
+    def one_time(name)
+      return unless block_given?
+
+      @one_time_variables ||= {}
+      unless @one_time_variables[name]
+        @one_time_variables[name] = true
+        yield
+      end
     end
   end
 end
