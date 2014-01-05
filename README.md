@@ -10,6 +10,6 @@
 
 ### Music
 
-* [Terrel O'Brien](http://soundcloud.com/gyrowolf)
-  * [desert](http://soundcloud.com/gyrowolf/gyro-dungeon003-ogg)
+* [Terrel O'Brien](http://gyrowolf.com)
+  * [desert](https://soundcloud.com/gyrowolf/gyro-dungeon003-ogg)
   * [score](https://soundcloud.com/gyrowolf/gyro-field001-ogg)
