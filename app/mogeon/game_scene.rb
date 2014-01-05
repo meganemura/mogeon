@@ -55,13 +55,7 @@ module Mogeon
       when State::System
         # system action
         if game_cleared?
-          one_time(:cleared) do
-            @world.backgroundMusicPlayer.stop
-            Map.clear!
-            reveal = SKTransition.flipHorizontalWithDuration(0.5 * SPEED)
-            score_scene = ScoreScene.alloc.initWithSize(self.size)
-            self.view.presentScene(score_scene, transition: reveal)
-          end
+          transition_to_score
         else
           @state.next
         end
@@ -74,6 +68,16 @@ module Mogeon
 
     def game_cleared?
       Map.friends.size - Map.enemies.size >= 1
+    end
+
+    def transition_to_score
+      one_time(:cleared) do
+        @world.backgroundMusicPlayer.stop
+        Map.clear!
+        reveal = SKTransition.flipHorizontalWithDuration(0.5 * SPEED)
+        score_scene = ScoreScene.alloc.initWithSize(self.size)
+        self.view.presentScene(score_scene, transition: reveal)
+      end
     end
 
     def queue_movers
