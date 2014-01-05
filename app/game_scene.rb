@@ -199,6 +199,7 @@ module Mogeon
       (1 << 3) => :down,
     }
 
+    # Swipe 場所と方向から全対象のユニットを動かす
     def swipe_node(touch_location, direction)
       touched_node = self.nodeAtPoint(touch_location)
       return unless touched_node.is_a? SKSpriteNode
@@ -220,6 +221,7 @@ module Mogeon
 
 
     # タッチされた node と、スワイプ方向から移動する nodes を選ぶ
+    # TODO: Map.node_at / @world.node_at にしたい
     def target_nodes(touched_node, with: direction)
       condition = case direction
                   when :right, :left
