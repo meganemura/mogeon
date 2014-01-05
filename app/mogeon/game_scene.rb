@@ -54,13 +54,14 @@ module Mogeon
       case @state.current
       when State::System
         # system action
-        if game_cleared? && !@in_transition
-          @in_transition = true
-          @world.backgroundMusicPlayer.stop
-          Map.clear!
-          reveal = SKTransition.flipHorizontalWithDuration(0.5 * SPEED)
-          score_scene = ScoreScene.alloc.initWithSize(self.size)
-          self.view.presentScene(score_scene, transition: reveal)
+        if game_cleared?
+          one_time(:cleared) do
+            @world.backgroundMusicPlayer.stop
+            Map.clear!
+            reveal = SKTransition.flipHorizontalWithDuration(0.5 * SPEED)
+            score_scene = ScoreScene.alloc.initWithSize(self.size)
+            self.view.presentScene(score_scene, transition: reveal)
+          end
         else
           @state.next
         end
