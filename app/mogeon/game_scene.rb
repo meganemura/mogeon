@@ -1,6 +1,8 @@
 module Mogeon
   class GameScene < SKScene
 
+    include SceneHelper
+
     def initWithSize(size)
       super
       self
@@ -241,21 +243,6 @@ module Mogeon
 
       nodes.select do |tile|
         condition.call(tile.position, touched_at)
-      end
-    end
-
-    def logging(message)
-      puts message.inspect
-    end
-
-    # name をキーとして一回だけ実行する
-    def one_time(name)
-      return unless block_given?
-
-      @one_time_variables ||= {}
-      unless @one_time_variables[name]
-        @one_time_variables[name] = true
-        yield
       end
     end
   end
