@@ -40,6 +40,7 @@ module Mogeon
       @world = GameWorld.new(self)
     end
 
+    # TODO: @world.update の処理としたほうがいい
     def update_hud
       state_hud = self.childNodeWithName(StateHud::NAME)
       state_hud.update(@state.current.to_s)
