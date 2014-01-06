@@ -54,11 +54,7 @@ module Mogeon
       case @state.current
       when State::System
         # system action
-        if game_cleared?
-          transition_to_score
-        else
-          @state.next
-        end
+        @state.next
       when State::Player
         # noop?
       else
@@ -93,6 +89,11 @@ module Mogeon
 
     def process_queue
       return if processing?
+
+      if game_cleared?
+        transition_to_score
+        return
+      end
 
       if @current_object = @queue.shift
         dx, dy = @current_object.think_moving
