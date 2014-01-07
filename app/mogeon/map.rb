@@ -90,6 +90,21 @@ module Mogeon
           [0, -1]
         end
       end
+
+      # 不要なタイルをスタック
+      #   TODO: 再利用する
+      def garbage_collect
+        @tiles, garbages = @tiles.partition do |tile|
+          0 <= tile.x && tile.x < Map.columns && 0 <= tile.y && tile.y < Map.rows
+        end
+
+        @garbages ||= []
+        garbages.each do |garbage|
+          garbage.hidden = true
+          @garbages << garbage
+        end
+      end
+
     end
   end
 end

@@ -214,6 +214,7 @@ module Mogeon
 
       # スワイプの direction に合わせて nodes を移動させる
       dx, dy = Map.moving_amount(direction)
+      add_random_tile(touched_node.x, touched_node.y, direction)
       target_nodes(touched_node, with: direction).each do |node|
         # TODO: nodes の数だけ実行されるのを1回に変更したい
         #       タッチ位置のユニットに対して行動する
@@ -225,8 +226,29 @@ module Mogeon
         ]
         node.run_actions
       end
+
+      # TODO: 範囲外のタイルを削除する
+      Map.garbage_collect
     end
 
+    # スワイプによって欠けるであろうタイルを追加する
+    def add_random_tile(touch_x, touch_y, direction)
+      x, y = case direction
+             when :right
+               [-1, touch_y]
+             when :left
+               [Map.columns, touch_y]
+             when :up
+               [touch_x, -1]
+             when :down
+               [touch_x, Map.rows]
+             end
+      tile = Tile.new(6, 6) # TODO: random
+      tile.locate(x, y)
+      Map.tiles << tile
+      self << tile
+      nil
+    end
 
     # タッチされた node と、スワイプ方向から移動する nodes を選ぶ
     # TODO: Map.node_at / @world.node_at にしたい

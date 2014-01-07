@@ -71,8 +71,8 @@ module Mogeon
       end
 
       def moved_point(dx, dy)
-        map_x = (@x + dx) % Map.columns
-        map_y = (@y + dy) % Map.rows
+        map_x = (@x + dx) # % Map.columns
+        map_y = (@y + dy) # % Map.rows
         [map_x, map_y]
       end
 
