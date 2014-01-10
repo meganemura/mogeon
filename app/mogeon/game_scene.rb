@@ -212,10 +212,27 @@ module Mogeon
       touched_node = self.nodeAtPoint(touch_location)
       return unless touched_node.is_a? SKSpriteNode
 
-      # スワイプの direction に合わせて nodes を移動させる
+      # swipe の direction に合わせて nodes を移動させる
       dx, dy = Map.moving_amount(direction)
+
+      # swipe する方向の反対側に tile を追加しておく
       add_random_tile(touched_node.x, touched_node.y, direction)
-      target_nodes(touched_node, with: direction).each do |node|
+
+      # swipe 先の方向にあるタイルから順番に行動するようにソート
+      targets = target_nodes(touched_node, with: direction).sort_by do |target|
+        case direction
+        when :right
+          -target.x
+        when :left
+          target.x
+        when :up
+          -target.y
+        when :down
+          target.y
+        end
+      end
+
+      targets.each do |node|
         # TODO: nodes の数だけ実行されるのを1回に変更したい
         #       タッチ位置のユニットに対して行動する
         #       複数あった場合は?
