@@ -96,18 +96,6 @@ module Mogeon
         [x, y]
       end
 
-      def action(&block)
-        if block
-          action = block.call
-          case action
-          when Array
-            self.runAction(SKAction.sequence(action))
-          else
-            self.runAction(action)
-          end
-        end
-      end
-
       def actions
         @actions ||= []
       end
