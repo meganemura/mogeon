@@ -212,12 +212,31 @@ module Mogeon
       touched_node = self.nodeAtPoint(touch_location)
       return unless touched_node.is_a? SKSpriteNode
 
-      # スワイプの direction に合わせて nodes を移動させる
+      # swipe の direction に合わせて nodes を移動させる
       dx, dy = Map.moving_amount(direction)
-      target_nodes(touched_node, with: direction).each do |node|
-        # TODO: nodes の数だけ実行されるのを1回に変更したい
-        #       タッチ位置のユニットに対して行動する
-        #       複数あった場合は?
+
+      # swipe する方向の反対側に tile を追加しておく
+      add_random_tile(touched_node.x, touched_node.y, direction)
+
+      # swipe 先の方向にあるタイルから順番に行動するようにソート
+      targets = target_nodes(touched_node, with: direction).sort_by do |target|
+        case direction
+        when :right
+          -target.x
+        when :left
+          target.x
+        when :up
+          -target.y
+        when :down
+          target.y
+        end
+      end
+
+      target_tiles, target_movers = targets.partition do |target|
+        target.is_a? Mogeon::Tile
+      end
+
+      target_tiles.each do |node|
         node.actions << [
           node.move_by(dx, dy),
           SoundEffect.move_tiles,
@@ -225,8 +244,51 @@ module Mogeon
         ]
         node.run_actions
       end
+
+      target_movers.each do |node|
+        # TODO: nodes の数だけ実行されるのを1回に変更したい
+        #       タッチ位置のユニットに対して行動する
+        #       複数あった場合は?
+        point = node.moved_point(dx, dy)
+        if Map.at(point.first, point.last)
+          logging "Stay"
+          node.actions << [
+            # Stay
+            SKAction.runBlock(lambda { @state.set(State::Friend) }),
+          ]
+        else
+          logging "Move"
+          node.actions << [
+            node.move_by(dx, dy, true),
+            SoundEffect.move_tiles,
+            SKAction.runBlock(lambda { @state.set(State::Friend) }),
+          ]
+        end
+        node.run_actions
+      end
+
+      # TODO: 範囲外のタイルを削除する
+      Map.garbage_collect
     end
 
+    # スワイプによって欠けるであろうタイルを追加する
+    def add_random_tile(touch_x, touch_y, direction)
+      x, y = case direction
+             when :right
+               [-1, touch_y]
+             when :left
+               [Map.columns, touch_y]
+             when :up
+               [touch_x, -1]
+             when :down
+               [touch_x, Map.rows]
+             end
+      tile = Tile.new(6, 6) # TODO: random
+      tile.locate(x, y)
+      Map.tiles << tile
+      self << tile
+      nil
+    end
 
     # タッチされた node と、スワイプ方向から移動する nodes を選ぶ
     # TODO: Map.node_at / @world.node_at にしたい

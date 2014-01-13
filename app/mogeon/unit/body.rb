@@ -2,6 +2,8 @@ module Mogeon
   module Unit
     class Body < Unit::Base
 
+      Z_POSITION = 1
+
       # マップ上の周りのユニットからどの方向に動くのかを決める
       #   処理内で Map.moving_amount 利用する?
       def think_moving

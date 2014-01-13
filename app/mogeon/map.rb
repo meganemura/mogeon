@@ -34,6 +34,11 @@ module Mogeon
         @enemies = nil
       end
 
+      # Map の (x, y) に存在する Unit を返す
+      def at(x, y)
+        Map.movers.find {|mover| mover.x == x && mover.y == y }
+      end
+
       # 誰もいない場所(スペース)を返す
       # TODO: 効率の良いアルゴリズムにする
       def space(x = nil, y = nil)
@@ -90,6 +95,21 @@ module Mogeon
           [0, -1]
         end
       end
+
+      # 不要なタイルをスタック
+      #   TODO: 再利用する
+      def garbage_collect
+        @tiles, garbages = @tiles.partition do |tile|
+          0 <= tile.x && tile.x < Map.columns && 0 <= tile.y && tile.y < Map.rows
+        end
+
+        @garbages ||= []
+        garbages.each do |garbage|
+          garbage.hidden = true
+          @garbages << garbage
+        end
+      end
+
     end
   end
 end
