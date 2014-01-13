@@ -56,7 +56,10 @@ module Mogeon
       end
 
       # absolute
-      def move_to(x, y)
+      def move_to(x, y, inside = false)
+        if inside
+          x, y = force_inside(x, y)
+        end
         @x = x
         @y = y
         target_location = [@x * self.class.size, @y * self.class.size].to_point + self.class.anchor_point_offset
@@ -64,16 +67,33 @@ module Mogeon
       end
 
       # relative
-      # (x, y) の差分を自分の position に追加する
-      def move_by(dx, dy)
+      # (x, y) の差分を自分の position に追加して move_to に渡す
+      def move_by(dx, dy, inside = false)
         x, y = moved_point(dx, dy)
-        move_to(x, y)
+        move_to(x, y, inside)
       end
 
       def moved_point(dx, dy)
         map_x = (@x + dx) # % Map.columns
         map_y = (@y + dy) # % Map.rows
         [map_x, map_y]
+      end
+
+      # Map 内におさめる
+      def force_inside(x, y)
+        if x < 0
+          x = 0
+        elsif x >= Map.columns
+          x = Map.columns - 1
+        end
+
+        if y < 0
+          y = 0
+        elsif y >= Map.rows
+          y = Map.rows - 1
+        end
+
+        [x, y]
       end
 
       def action(&block)

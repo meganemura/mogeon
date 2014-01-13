@@ -232,15 +232,38 @@ module Mogeon
         end
       end
 
-      targets.each do |node|
-        # TODO: nodes の数だけ実行されるのを1回に変更したい
-        #       タッチ位置のユニットに対して行動する
-        #       複数あった場合は?
+      target_tiles, target_movers = targets.partition do |target|
+        target.is_a? Mogeon::Tile
+      end
+
+      target_tiles.each do |node|
         node.actions << [
           node.move_by(dx, dy),
           SoundEffect.move_tiles,
           SKAction.runBlock(lambda { @state.set(State::Friend) }),
         ]
+        node.run_actions
+      end
+
+      target_movers.each do |node|
+        # TODO: nodes の数だけ実行されるのを1回に変更したい
+        #       タッチ位置のユニットに対して行動する
+        #       複数あった場合は?
+        point = node.moved_point(dx, dy)
+        if Map.at(point.first, point.last)
+          logging "Stay"
+          node.actions << [
+            # Stay
+            SKAction.runBlock(lambda { @state.set(State::Friend) }),
+          ]
+        else
+          logging "Move"
+          node.actions << [
+            node.move_by(dx, dy, true),
+            SoundEffect.move_tiles,
+            SKAction.runBlock(lambda { @state.set(State::Friend) }),
+          ]
+        end
         node.run_actions
       end
 

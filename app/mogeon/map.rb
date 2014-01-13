@@ -34,6 +34,11 @@ module Mogeon
         @enemies = nil
       end
 
+      # Map の (x, y) に存在する Unit を返す
+      def at(x, y)
+        Map.movers.find {|mover| mover.x == x && mover.y == y }
+      end
+
       # 誰もいない場所(スペース)を返す
       # TODO: 効率の良いアルゴリズムにする
       def space(x = nil, y = nil)
