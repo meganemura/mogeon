@@ -69,13 +69,13 @@ module Mogeon
       Map.friends.size - Map.enemies.size >= 1
     end
 
-    def transition_to_score
+    def transition_to_result
       one_time(:cleared) do
         @world.backgroundMusicPlayer.stop
         Map.clear!
         reveal = SKTransition.flipHorizontalWithDuration(0.5 * SPEED)
-        score_scene = ScoreScene.alloc.initWithSize(self.size)
-        self.view.presentScene(score_scene, transition: reveal)
+        result_scene = ResultScene.alloc.initWithSize(self.size)
+        self.view.presentScene(result_scene, transition: reveal)
       end
     end
 
@@ -94,7 +94,7 @@ module Mogeon
       return if processing?
 
       if game_cleared?
-        transition_to_score
+        transition_to_result
         return
       end
 

@@ -1,5 +1,5 @@
 module Mogeon
-  class ScoreScene < SKScene
+  class ResultScene < SKScene
 
     def initWithSize(size)
       super
