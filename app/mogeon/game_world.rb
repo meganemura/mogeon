@@ -1,5 +1,8 @@
 module Mogeon
   class GameWorld
+
+    ENEMY_SPAWN_INTERVAL = 3
+
     def initialize(scene)
       @scene = scene
       setup_map
@@ -7,6 +10,7 @@ module Mogeon
       setup_sound_effect
       setup_background_music
       setup_units
+      setup_factory
     end
 
     def setup_map
@@ -46,14 +50,6 @@ module Mogeon
     DEFAULT_ENEMY_SIZE  = 2
     def setup_units
       # setup friends
-      DEFAULT_FRIEND_SIZE.times do
-        friend = Friend.new(0, 0)
-        x, y = Map.space(nil, 0)
-        friend.locate(x, y)
-
-        Map.friends << friend
-        @scene.addChild(friend)
-      end
 
       # setup enemies
       DEFAULT_ENEMY_SIZE.times do
@@ -66,6 +62,25 @@ module Mogeon
       end
 
       # setup neutrals
+    end
+
+    attr_reader :factory
+    def setup_factory
+      @factory = UnitFactory.new
+    end
+
+    # long_press による生成
+    def spawn_friend(klass, x, y)
+      # 配置可能なら x, y が返る
+      x, y = Map.space(x, y)
+
+      if x && y
+        friend = klass.new(0, 0)
+        friend.locate(x, y)
+
+        Map.friends << friend
+        @scene.addChild(friend)
+      end
     end
   end
 end

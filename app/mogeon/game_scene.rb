@@ -18,6 +18,7 @@ module Mogeon
 
     def setup_gesture_recognizer
       tap_recognizer = UILongPressGestureRecognizer.alloc.initWithTarget(self, action: :'long_press:')
+      tap_recognizer.minimumPressDuration = 0.3
       self.view.addGestureRecognizer(tap_recognizer)
 
       [
@@ -38,6 +39,8 @@ module Mogeon
       @queue = []
       @state = State.new
       @world = GameWorld.new(self)
+      @last_updated_at = 0
+      @last_update_time_interval = 0
     end
 
     # TODO: @world.update の処理としたほうがいい
@@ -48,18 +51,38 @@ module Mogeon
 
     # Called before each frame is rendered
     def update(current_time)
+      time_since_last_update = current_time - @last_updated_at
+      # Handle time delta.
+      # If we drop below 60fps, we still want everything to move the same distance.
+      time_since_last = current_time - @last_update_time_interval
 
+      # more than a second since last update
+      if time_since_last > 1
+        time_since_last = 1.0 / 60.0
+      end
+
+      update_with_time_since_last_update(time_since_last)
+    end
+
+    def update_with_time_since_last_update(time_since_last)
       if @state.changed?
         update_hud
         queue_movers
       end
+
+      @world.factory.update(time_since_last)
 
       case @state.current
       when State::System
         # system action
         @state.next
       when State::Player
-        # noop?
+        # カウントダウン
+        @last_update_time_interval += time_since_last
+        if @last_update_time_interval > GameWorld::ENEMY_SPAWN_INTERVAL
+          @last_update_time_interval = 0
+          @state.next
+        end
       else
         process_queue
       end
@@ -151,40 +174,27 @@ module Mogeon
 
     # UILongPressGestureRecognizer
     def long_press(recognizer)
-      return unless user_controllable?
-
       touch_location  = recognizer.locationInView(recognizer.view)
       touch_location  = self.convertPointFromView(touch_location)
       touched_node    = self.nodeAtPoint(touch_location)
 
-      return unless touched_node.respond_to?(:sight)
-
       case recognizer.state
       when UIGestureRecognizerStateBegan
         logging "UILongPress: UIGestureRecognizerStateBegan"
-
-        sequence = SKAction.sequence([
-          SKAction.rotateByAngle(degrees_to_radians(-4.0), duration: 0.1 * SPEED),
-          SKAction.rotateByAngle(0.0, duration: 0.1 * SPEED),
-          SKAction.rotateByAngle(degrees_to_radians(4.0), duration: 0.1 * SPEED),
-        ])
-        touched_node.with_nodes_of_sight.each do |node|
-          node.runAction(SKAction.repeatActionForever(sequence))
-        end
+        @world.factory.creating = true
       when UIGestureRecognizerStateChanged
         logging "UILongPress: UIGestureRecognizerStateChanged"
-
-        touched_node.with_nodes_of_sight.each do |node|
-          node.stop_motion.run_actions
-        end
+        @world.factory.creating = false
       when UIGestureRecognizerStateEnded
         logging "UILongPress: UIGestureRecognizerStateEnded"
-
-        touched_node.with_nodes_of_sight.each do |node|
-          node.stop_motion.run_actions
+        # !user_controllable? の場合の処理を検討
+        character = @world.factory.character
+        if character
+          @world.spawn_friend(character, touched_node.x, touched_node.y)
         end
       end
     end
+
 
     # UISwipeGestureRecognizer
     def swipe(recognizer)
