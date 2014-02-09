@@ -71,6 +71,11 @@ module Mogeon
       end
 
       @world.factory.update(time_since_last)
+      if @world.factory.spawn?
+        create_at = @world.factory.create_at
+        tile = Map.tile_at(create_at.first, create_at.last)
+        tile.texture = Tile.partial_texture(5, 6)
+      end
 
       case @state.current
       when State::System
@@ -182,6 +187,7 @@ module Mogeon
       when UIGestureRecognizerStateBegan
         logging "UILongPress: UIGestureRecognizerStateBegan"
         @world.factory.creating = true
+        @world.factory.create_at = [touched_node.x, touched_node.y]
       when UIGestureRecognizerStateChanged
         logging "UILongPress: UIGestureRecognizerStateChanged"
         @world.factory.creating = false
@@ -192,6 +198,10 @@ module Mogeon
         if character
           @world.spawn_friend(character, touched_node.x, touched_node.y)
         end
+        @world.factory.creating = false
+
+        tile = Map.tile_at(touched_node.x, touched_node.y)
+        tile.texture = Tile.partial_texture(6, 6)
       end
     end
 
