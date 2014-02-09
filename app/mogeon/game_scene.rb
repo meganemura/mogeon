@@ -18,6 +18,7 @@ module Mogeon
 
     def setup_gesture_recognizer
       tap_recognizer = UILongPressGestureRecognizer.alloc.initWithTarget(self, action: :'long_press:')
+      tap_recognizer.minimumPressDuration = 0.3
       self.view.addGestureRecognizer(tap_recognizer)
 
       [
@@ -68,6 +69,8 @@ module Mogeon
         update_hud
         queue_movers
       end
+
+      @world.factory.update(time_since_last)
 
       case @state.current
       when State::System
@@ -171,40 +174,27 @@ module Mogeon
 
     # UILongPressGestureRecognizer
     def long_press(recognizer)
-      return unless user_controllable?
-
       touch_location  = recognizer.locationInView(recognizer.view)
       touch_location  = self.convertPointFromView(touch_location)
       touched_node    = self.nodeAtPoint(touch_location)
 
-      return unless touched_node.respond_to?(:sight)
-
       case recognizer.state
       when UIGestureRecognizerStateBegan
         logging "UILongPress: UIGestureRecognizerStateBegan"
-
-        sequence = SKAction.sequence([
-          SKAction.rotateByAngle(degrees_to_radians(-4.0), duration: 0.1 * SPEED),
-          SKAction.rotateByAngle(0.0, duration: 0.1 * SPEED),
-          SKAction.rotateByAngle(degrees_to_radians(4.0), duration: 0.1 * SPEED),
-        ])
-        touched_node.with_nodes_of_sight.each do |node|
-          node.runAction(SKAction.repeatActionForever(sequence))
-        end
+        @world.factory.creating = true
       when UIGestureRecognizerStateChanged
         logging "UILongPress: UIGestureRecognizerStateChanged"
-
-        touched_node.with_nodes_of_sight.each do |node|
-          node.stop_motion.run_actions
-        end
+        @world.factory.creating = false
       when UIGestureRecognizerStateEnded
         logging "UILongPress: UIGestureRecognizerStateEnded"
-
-        touched_node.with_nodes_of_sight.each do |node|
-          node.stop_motion.run_actions
+        # !user_controllable? の場合の処理を検討
+        character = @world.factory.character
+        if character
+          @world.spawn_friend(character)
         end
       end
     end
+
 
     # UISwipeGestureRecognizer
     def swipe(recognizer)

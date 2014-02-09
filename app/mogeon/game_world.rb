@@ -10,6 +10,7 @@ module Mogeon
       setup_sound_effect
       setup_background_music
       setup_units
+      setup_factory
     end
 
     def setup_map
@@ -61,6 +62,21 @@ module Mogeon
       end
 
       # setup neutrals
+    end
+
+    attr_reader :factory
+    def setup_factory
+      @factory = UnitFactory.new
+    end
+
+    # long_press による生成
+    def spawn_friend(klass)
+      friend = klass.new(0, 0)
+      x, y = Map.space(nil, 0)
+      friend.locate(x, y)
+
+      Map.friends << friend
+      @scene.addChild(friend)
     end
   end
 end
