@@ -39,6 +39,11 @@ module Mogeon
         Map.movers.find {|mover| mover.x == x && mover.y == y }
       end
 
+      # Map の (x, y) に存在する Tile を返す
+      def tile_at(x, y)
+        Map.tiles.find {|tile| tile.x == x && tile.y == y }
+      end
+
       # 誰もいない場所(スペース)を返す
       # TODO: 効率の良いアルゴリズムにする
       def space(x = nil, y = nil)
@@ -74,7 +79,8 @@ module Mogeon
             if (column + row) % 2 == 0
               tile = Tile.new(6, 6)
             else
-              tile = Tile.new(5, 6)
+              tile = Tile.new(6, 6)
+              # tile = Tile.new(5, 6)
             end
             tile.locate(column, row)
             tiles << tile

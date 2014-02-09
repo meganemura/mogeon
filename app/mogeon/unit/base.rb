@@ -14,10 +14,8 @@ module Mogeon
         # テクスチャの (x, y) を Sprite として利用する
         def new(x, y)
           setup_once
-          rect = CGRectMake(x * @w, y * @h, @w, @h)
-          partial_texture = SKTexture.textureWithRect(rect, inTexture: @texture)
 
-          instance = self.spriteNodeWithTexture(partial_texture).tap do |config|
+          instance = self.spriteNodeWithTexture(partial_texture(x, y)).tap do |config|
             config.x = x
             config.y = y
             # config.anchorPoint = [0.5, 0.5] # default
@@ -26,6 +24,11 @@ module Mogeon
           end
 
           instance
+        end
+
+        def partial_texture(x, y)
+          rect = CGRectMake(x * @w, y * @h, @w, @h)
+          SKTexture.textureWithRect(rect, inTexture: @texture)
         end
 
         def setup_once

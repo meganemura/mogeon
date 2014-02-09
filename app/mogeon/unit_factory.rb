@@ -7,6 +7,7 @@ module Mogeon
     end
 
     attr_accessor :creating
+    attr_accessor :create_at
 
     def update(time_since_last)
       if @creating
@@ -16,13 +17,15 @@ module Mogeon
       end
     end
 
+    def spawn?
+      !! character
+    end
+
     def character
       case @time_elapsed.to_i
       when 0
-        puts "nothing"
-        Friend
+        nil
       when 1..10
-        puts "1..10"
         Friend
       end
     end
