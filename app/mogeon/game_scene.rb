@@ -190,7 +190,7 @@ module Mogeon
         # !user_controllable? の場合の処理を検討
         character = @world.factory.character
         if character
-          @world.spawn_friend(character)
+          @world.spawn_friend(character, touched_node.x, touched_node.y)
         end
       end
     end

@@ -70,13 +70,17 @@ module Mogeon
     end
 
     # long_press による生成
-    def spawn_friend(klass)
-      friend = klass.new(0, 0)
-      x, y = Map.space(nil, 0)
-      friend.locate(x, y)
+    def spawn_friend(klass, x, y)
+      # 配置可能なら x, y が返る
+      x, y = Map.space(x, y)
 
-      Map.friends << friend
-      @scene.addChild(friend)
+      if x && y
+        friend = klass.new(0, 0)
+        friend.locate(x, y)
+
+        Map.friends << friend
+        @scene.addChild(friend)
+      end
     end
   end
 end
