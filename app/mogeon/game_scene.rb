@@ -38,6 +38,8 @@ module Mogeon
       @queue = []
       @state = State.new
       @world = GameWorld.new(self)
+      @last_updated_at = 0
+      @last_update_time_interval = 0
     end
 
     # TODO: @world.update の処理としたほうがいい
@@ -48,7 +50,20 @@ module Mogeon
 
     # Called before each frame is rendered
     def update(current_time)
+      time_since_last_update = current_time - @last_updated_at
+      # Handle time delta.
+      # If we drop below 60fps, we still want everything to move the same distance.
+      time_since_last = current_time - @last_update_time_interval
 
+      # more than a second since last update
+      if time_since_last > 1
+        time_since_last = 1.0 / 60.0
+      end
+
+      update_with_time_since_last_update(time_since_last)
+    end
+
+    def update_with_time_since_last_update(time_since_last)
       if @state.changed?
         update_hud
         queue_movers
@@ -59,7 +74,12 @@ module Mogeon
         # system action
         @state.next
       when State::Player
-        # noop?
+        # カウントダウン
+        @last_update_time_interval += time_since_last
+        if @last_update_time_interval > GameWorld::ENEMY_SPAWN_INTERVAL
+          @last_update_time_interval = 0
+          @state.next
+        end
       else
         process_queue
       end

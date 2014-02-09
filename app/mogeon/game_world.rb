@@ -1,5 +1,8 @@
 module Mogeon
   class GameWorld
+
+    ENEMY_SPAWN_INTERVAL = 3
+
     def initialize(scene)
       @scene = scene
       setup_map
