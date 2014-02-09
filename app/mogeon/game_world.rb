@@ -46,14 +46,6 @@ module Mogeon
     DEFAULT_ENEMY_SIZE  = 2
     def setup_units
       # setup friends
-      DEFAULT_FRIEND_SIZE.times do
-        friend = Friend.new(0, 0)
-        x, y = Map.space(nil, 0)
-        friend.locate(x, y)
-
-        Map.friends << friend
-        @scene.addChild(friend)
-      end
 
       # setup enemies
       DEFAULT_ENEMY_SIZE.times do
