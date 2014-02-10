@@ -18,7 +18,7 @@ module Mogeon
 
     def setup_gesture_recognizer
       tap_recognizer = UILongPressGestureRecognizer.alloc.initWithTarget(self, action: :'long_press:')
-      tap_recognizer.minimumPressDuration = 0.0
+      tap_recognizer.minimumPressDuration = LONG_PRESS_EPOCH
       self.view.addGestureRecognizer(tap_recognizer)
 
       [

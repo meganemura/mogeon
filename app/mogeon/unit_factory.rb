@@ -1,7 +1,11 @@
 module Mogeon
   class UnitFactory
     def initialize
-      @time_elapsed = 0
+      reset
+    end
+
+    def reset
+      @time_elapsed = LONG_PRESS_EPOCH
       @spawn_target = 0
       @creating = false
     end
@@ -13,7 +17,7 @@ module Mogeon
       if @creating
         @time_elapsed += time_since_last
       else
-        @time_elapsed = 0
+        reset
       end
     end
 
