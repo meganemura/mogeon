@@ -23,13 +23,14 @@ module Mogeon
 
     def setup_hud
       # State HUD
-      state_hud = StateHud.new("State:")
-      state_hud.position = [
-        20 + state_hud.frame.size.width / 2,
-        @scene.size.height - (20 + state_hud.frame.size.height)
+      @state_hud = StateHud.new("State:")
+      @state_hud.position = [
+        20 + @state_hud.frame.size.width / 2,
+        @scene.size.height - (20 + @state_hud.frame.size.height)
       ].to_point
-      @scene.addChild(state_hud)
+      @scene.addChild(@state_hud)
     end
+    attr_reader :state_hud
 
     # pre-loading
     def setup_sound_effect

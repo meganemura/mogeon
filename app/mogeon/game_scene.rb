@@ -43,12 +43,6 @@ module Mogeon
       @last_update_time_interval = 0
     end
 
-    # TODO: @world.update の処理としたほうがいい
-    def update_hud
-      state_hud = self.childNodeWithName(StateHud::NAME)
-      state_hud.update(@state.current.to_s)
-    end
-
     # Called before each frame is rendered
     def update(current_time)
       time_since_last_update = current_time - @last_updated_at
@@ -66,7 +60,7 @@ module Mogeon
 
     def update_with_time_since_last_update(time_since_last)
       if @state.changed?
-        update_hud
+        @world.state_hud.update(@state.current.to_s)
         queue_movers
       end
 
